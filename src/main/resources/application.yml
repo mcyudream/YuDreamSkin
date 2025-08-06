@@ -9,3 +9,5 @@ security:
       - /css/**
       - /js/**
       - /favicon.ico
+      - /assets/**
+

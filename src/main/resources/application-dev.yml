@@ -9,3 +9,5 @@ spring:
       port: 6379
   thymeleaf:
     cache: false
+server:
+  address: 0.0.0.0
