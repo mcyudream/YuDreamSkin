@@ -9,5 +9,4 @@ class YuDreamSkinApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
