@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{index::page(~{::body})}" th:fragment="home(homeContent)">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:replace="~{components/nav :: top-nav}"></div>
+    <main>
+        <div th:replace="${homeContent}"></div>
+    </main>
+
+</body>
+</html>

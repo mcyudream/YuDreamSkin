@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:fragment="page(content)">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">余梦</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body th:replace="${content}">
+
+</body>
+</html>

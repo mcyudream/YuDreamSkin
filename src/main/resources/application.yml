@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+security:
+  excluded-urls:
+    urls:
+      - /login
+      - /
+      - /css/**
+      - /js/**
+      - /favicon.ico
