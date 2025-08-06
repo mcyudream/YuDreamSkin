@@ -9,4 +9,6 @@ public interface UserService {
 
 
     R<User> login(String username, String password, HttpSession session);
+
+    R<User> register(String username, String password, String email, String emailCode);
 }

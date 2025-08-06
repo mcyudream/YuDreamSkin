@@ -11,4 +11,6 @@ public interface UserMapper extends MongoRepository<User, String> {
     User findUserByUsernameOrEmailOrQq(String username, String email, String qq);
 
     User findUserByUsername(String username);
+
+    User findUserByUsernameOrEmail(String username, String email);
 }

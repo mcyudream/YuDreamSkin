@@ -5,9 +5,10 @@ security:
   excluded-urls:
     urls:
       - /login
+      - /register
       - /
       - /css/**
       - /js/**
       - /favicon.ico
       - /assets/**
-
+      - /captcha/**
