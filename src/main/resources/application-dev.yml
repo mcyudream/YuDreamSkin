@@ -7,7 +7,16 @@ spring:
     redis:
       host: localhost
       port: 6379
+    minio:
+      host: localhost
+      port: 9000
+      username: minioadmin
+      password: minioadmin
+      bucket: yudream
   thymeleaf:
     cache: false
 server:
   address: 0.0.0.0
+default-user:
+  username: admin
+  password: admin
