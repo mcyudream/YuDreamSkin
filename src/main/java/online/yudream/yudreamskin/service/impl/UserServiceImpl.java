@@ -1,6 +1,7 @@
 package online.yudream.yudreamskin.service.impl;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import online.yudream.yudreamskin.common.R;
 import online.yudream.yudreamskin.entity.User;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public R<User> login(String username, String password) {
+    public R<User> login(String username, String password, HttpSession session) {
         User user = userMapper.findUserByUsername(username);
         if (user == null) {
             return R.fail(403, "不存在的用户");
@@ -49,6 +51,9 @@ public class UserServiceImpl implements UserService {
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
         return R.ok(user);
     }
 }

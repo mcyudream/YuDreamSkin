@@ -13,12 +13,14 @@
             <div class="flex-none">
                 <ul class="menu menu-horizontal px-1">
                     <li><a>Link</a></li>
-                    <li>
+                    <li th:if="${session.user==null}">
+                        <a th:href="@{/login}">登录</a>
+                    </li>
+                    <li th:if="${session.user!=null}">
                         <details>
-                            <summary>Parent</summary>
+                            <summary th:text="${session.user.username}"></summary>
                             <ul class="bg-base-100 rounded-t-none p-2">
-                                <li><a>Link 1</a></li>
-                                <li><a>Link 2</a></li>
+                                <li><a th:href="@{/logout}">退出登录</a></li>
                             </ul>
                         </details>
                     </li>

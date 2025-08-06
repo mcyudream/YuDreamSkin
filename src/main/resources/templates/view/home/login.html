@@ -13,9 +13,10 @@
             <div class="sm:flex sm:flex-col justify-center text-center w-full items-center sm:w-2/5 sm:min-h-48">
                 <h1 class="font-bold text-2xl">Welcome Back!</h1>
                 <span th:text="|Login to Yudream|"></span>
+                <a th:href="@{/register}"><button class="btn btn-info rounded-3xl mt-4 text-white hidden sm:flex">现在注册</button></a>
                 <img alt="creatingTable" th:src="@{/assets/images/CraftingTable.png}" class="hidden sm:flex sm:absolute h-16 w-16 z-0 bottom-4 left-4"/>
             </div>
-            <div class="p-6 flex-1">
+            <div class="p-0 sm:p-6 w-full flex-1">
                 <form th:action="@{/login}" method="post" class="w-full">
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend font-[Minecraft-AE]">用户名或邮箱</legend>
@@ -46,6 +47,12 @@
                         </svg>
                         登录
                     </button>
+                    <a th:href="@{/register}" class="sm:hidden mt-4 w-full flex">
+                        <button class="btn  bg-white w-full text-black border-[#e5e5e5]">
+                            <svg aria-label="Email icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="black"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></g></svg>
+                            现在注册
+                        </button>
+                    </a>
                 </form>
             </div>
         </div>
