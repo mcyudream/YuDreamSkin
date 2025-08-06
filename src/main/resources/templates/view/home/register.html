@@ -24,7 +24,8 @@
                     </fieldset>
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend font-[Minecraft-AE]">邮箱</legend>
-                        <input type="text" name="email" id="email-input" class="input w-full" placeholder="请输入邮箱" />
+                        <input type="email" name="email" required  id="email-input" class="input w-full validator" placeholder="请输入邮箱" />
+                        <div class="validator-hint hidden">输入一个正确的邮箱地址</div>
                     </fieldset>
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend font-[Minecraft-AE]">邮箱</legend>
@@ -34,18 +35,12 @@
                         </span>
                     </fieldset>
                     <fieldset class="fieldset">
-                        <legend class="fieldset-legend">密码</legend>
-                        <input type="password" name="password" class="input w-full" placeholder="输入密码" />
+                        <legend class="fieldset-legend " >密码</legend>
+                        <input   pattern="(?=.*\d)(?=.*[A-Za-z]).{8,}" required minlength="8"  type="password" name="password" class="input w-full validator" placeholder="输入密码" />
+                        <p class="validator-hint hidden">
+                            必须大于8个字符且包含数字和字母
+                        </p>
                     </fieldset>
-                    <div  class="mt-2 flex w-full text-sm items-center justify-between" >
-                        <label class="label items-center">
-                            <input type="checkbox" checked="checked" class="toggle" />
-                            记住密码
-                        </label>
-                        <a class="text-gray-600 hover:text-gray-950">
-                            忘记密码
-                        </a>
-                    </div>
                     <div th:if="${param.error != null}" role="alert" class="alert alert-error mt-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
