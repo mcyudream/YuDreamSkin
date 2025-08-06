@@ -14,8 +14,10 @@
                         致力于推进Minecraft信息化进程！提供Minecraft信息化服务
                     </p>
                     <a th:href="@{/register}">
-                        <button class="btn text-white btn-primary">前去注册</button>
+                        <button th:if="${session.user==null}" class="btn text-white btn-primary">前去注册</button>
+                        <button th:if="${session.user!=null}" class="btn text-white btn-primary">用户中心</button>
                     </a>
+
                 </div>
             </div>
         </div>

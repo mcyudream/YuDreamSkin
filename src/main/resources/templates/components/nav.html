@@ -19,7 +19,7 @@
                     <li th:if="${session.user!=null}">
                         <details>
                             <summary th:text="${session.user.username}"></summary>
-                            <ul class="bg-base-100 rounded-t-none p-2">
+                            <ul class="bg-base-100 rounded-t-none p-2 z-10">
                                 <li><a th:href="@{/logout}">退出登录</a></li>
                             </ul>
                         </details>
