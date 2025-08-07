@@ -4,20 +4,21 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import online.yudream.yudreamskin.common.R;
 import online.yudream.yudreamskin.entity.User;
-import online.yudream.yudreamskin.service.UserService;
+import online.yudream.yudreamskin.service.AuthService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
 public class IndexController {
     @Resource
-    private UserService userService;
+    private AuthService authService;
 
     @GetMapping
     public String index() {
@@ -35,7 +36,7 @@ public class IndexController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
-        R<User> res = userService.login(username, password, session);
+        R<User> res = authService.login(username, password, session);
         if (res.isSuccess()) {
             User user = res.getData();
             session.setAttribute("user", user);
@@ -71,7 +72,7 @@ public class IndexController {
                            @RequestParam String email,
                            @RequestParam String emailCode,
                            HttpSession session) {
-        R<User> res = userService.register(username, password, email, emailCode);
+        R<User> res = authService.register(username, password, email, emailCode);
         if (res.isSuccess()) {
             return "redirect:/login";
 
@@ -79,5 +80,35 @@ public class IndexController {
             return "redirect:/register?error="+res.getMsg();
 
         }
+    }
+
+    @GetMapping("/passkey/register/options")
+    public String getPasskeyRegistrationOptions(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "";
+        }
+        return authService.startPasskeyRegistration(user.getId());
+    }
+
+    @PostMapping("/passkey/register")
+    public String verifyPasskeyRegistration(@RequestBody String credential, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "";
+        }
+        authService.finishPasskeyRegistration(user.getId(), credential);
+        return "";
+    }
+
+    @GetMapping("/passkey/login/options")
+    public String getPasskeyAssertionOptions(HttpSession session) {
+        return authService.startPasskeyAssertion(session.getId());
+    }
+
+    @PostMapping("/passkey/login")
+    public String verifyPasskeyAssertion(@RequestBody String credential, HttpSession session) {
+        var user = authService.finishPasskeyAssertion(session.getId(), credential);
+        return "";
     }
 }

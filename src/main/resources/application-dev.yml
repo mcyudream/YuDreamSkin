@@ -34,3 +34,7 @@ server:
 default-user:
   username: admin
   password: admin
+passkey:
+  rpId: localhost
+  rpName: Yudream Passkey Demo
+  origins: http://localhost:8080
