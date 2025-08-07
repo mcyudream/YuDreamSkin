@@ -82,33 +82,5 @@ public class IndexController {
         }
     }
 
-    @GetMapping("/passkey/register/options")
-    public String getPasskeyRegistrationOptions(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "";
-        }
-        return authService.startPasskeyRegistration(user.getId());
-    }
 
-    @PostMapping("/passkey/register")
-    public String verifyPasskeyRegistration(@RequestBody String credential, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "";
-        }
-        authService.finishPasskeyRegistration(user.getId(), credential);
-        return "";
-    }
-
-    @GetMapping("/passkey/login/options")
-    public String getPasskeyAssertionOptions(HttpSession session) {
-        return authService.startPasskeyAssertion(session.getId());
-    }
-
-    @PostMapping("/passkey/login")
-    public String verifyPasskeyAssertion(@RequestBody String credential, HttpSession session) {
-        var user = authService.finishPasskeyAssertion(session.getId(), credential);
-        return "";
-    }
 }

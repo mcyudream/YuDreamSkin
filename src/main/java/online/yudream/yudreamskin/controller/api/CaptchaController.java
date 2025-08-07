@@ -1,4 +1,4 @@
-package online.yudream.yudreamskin.controller;
+package online.yudream.yudreamskin.controller.api;
 
 import jakarta.annotation.Resource;
 import online.yudream.yudreamskin.service.CaptchaService;
