@@ -10,6 +10,8 @@ public interface AuthService {
 
     R<User> register(String username, String password, String email, String emailCode);
 
+    R<User> forgetPassword(String email, String password, String emailCode);
+
     String startPasskeyRegistration(String userID);
 
     void finishPasskeyRegistration(String userID, String credential);

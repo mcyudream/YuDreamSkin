@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/homeLayout :: home(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<body>
+<section class="w-full flex items-center justify-center  h-full overflow-auto relative">
+    <div id="login-card" class="p-6 sm:my-10 sm:p-0 h-full sm:h-auto w-full sm:w-1/3 flex sm:min-w-2xl items-center justify-center flex-col sm:flex-row bg-white shadow sm:rounded-2xl relative">
+        <div class="sm:flex sm:flex-col justify-center text-center w-full items-center sm:w-2/5 sm:min-h-48">
+            <h1 class="font-bold text-2xl">Welcome Join!</h1>
+            <span th:text="|Register to Yudream|"></span>
+            <a th:href="@{/login}"><button class="btn btn-info rounded-3xl mt-4 text-white hidden sm:flex">现在登录</button></a>
+            <img alt="creatingTable" th:src="@{/assets/images/CraftingTable.png}" class="hidden sm:flex sm:absolute h-16 w-16 z-0 bottom-4 left-4"/>
+        </div>
+        <div class="p-0 sm:p-6 w-full flex-1">
+            <form th:action="@{/forget}" method="post" class="w-full">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend font-[Minecraft-AE]">邮箱</legend>
+                    <input type="email" name="email" required  id="email-input" class="input w-full validator" placeholder="请输入邮箱" />
+                    <div class="validator-hint hidden">输入一个正确的邮箱地址</div>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend font-[Minecraft-AE]">验证码</legend>
+                    <span class="join w-full">
+                            <input type="text" name="emailCode" class="input join-item" placeholder="请输入邮箱验证码" />
+                            <button type="button" class="btn join-item" id="send-email-code">发送验证码</button>
+                        </span>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend " >密码</legend>
+                    <input   pattern="(?=.*\d)(?=.*[A-Za-z]).{8,}" required minlength="8"  type="password" name="password" class="input w-full validator" placeholder="输入密码" />
+                    <p class="validator-hint hidden">
+                        必须大于8个字符且包含数字和字母
+                    </p>
+                </fieldset>
+                <div th:if="${param.error != null}" role="alert" class="alert alert-error mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span th:text="|${param.error} ,请重新尝试!|"></span>
+                </div>
+                <button type="submit" class="btn w-full mt-4 bg-black text-white border-black">
+                    <svg t="1754509469916" class="icon size-4" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4433"><path d="M512 51.2a204.8 204.8 0 1 1 0 409.6 204.8 204.8 0 0 1 0-409.6z m0 486.4c100.5312 0 193.536 32.2048 269.312 86.8352a204.8768 204.8768 0 0 0-96.384 322.7904H54.016C79.4624 716.8 274.816 537.6 512 537.6z m371.2 153.6v89.6H972.8v76.8h-89.6V947.2h-76.8v-89.6H716.8v-76.8h89.6V691.2h76.8z" p-id="4434" fill="#ffffff"></path></svg>
+                    找回密码
+                </button>
+                <a th:href="@{/login}" class="sm:hidden mt-4 w-full flex">
+                    <button type="button" class="btn  bg-white w-full text-black border-[#e5e5e5]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                        现在登录
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('send-email-code').addEventListener('click', function () {
+            const email = document.getElementById('email-input').value.trim();
+            const btn = this;
+            if (!email) {
+                return;
+            }
+            // 防止重复点击
+            btn.disabled = true;
+            btn.textContent = '发送中...';
+            axios.get('/captcha/forget', { params: { email:email } })
+                .then(() => {
+                    // 60 秒后可重发
+                    let sec = 60;
+                    const timer = setInterval(() => {
+                        btn.textContent = --sec + 's';
+                        if (sec <= 0) {
+                            clearInterval(timer);
+                            btn.disabled = false;
+                            btn.textContent = '发送验证码';
+                        }
+                    }, 1000);
+                })
+                .catch(err => {
+                    alert('发送失败：' + (err.response?.data || err.message));
+                    btn.disabled = false;
+                    btn.textContent = '发送验证码';
+                });
+        });
+    </script>
+</section>
+</body>
+</html>

@@ -6,7 +6,9 @@ security:
     urls:
       - /login
       - /register
+      - /forget
       - /
+      - /404
       - /css/**
       - /js/**
       - /favicon.ico

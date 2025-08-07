@@ -85,6 +85,24 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public R<User> forgetPassword(String email, String password, String emailCode) {
+        User user = userMapper.findUserByEmail(email);
+        if (user == null) {
+            return R.fail(400, "用户不存在!");
+        } else {
+            if (mailUtils.viaCaptcha(email,emailCode, "forget")){
+                if (!passwordVia(password)){
+                    return R.fail("密码校验失败!");
+                }
+                user.setPassword(passwordEncoder.encode(password));
+                user = userMapper.save(user);
+                return R.ok(user);
+            }
+            return R.fail(400, "验证码错误!");
+        }
+    }
+
     // todo 错误处理
     @SneakyThrows
     @Override

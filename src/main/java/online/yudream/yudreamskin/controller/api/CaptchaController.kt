@@ -1,19 +1,25 @@
-package online.yudream.yudreamskin.controller.api;
+package online.yudream.yudreamskin.controller.api
 
-import jakarta.annotation.Resource;
-import online.yudream.yudreamskin.service.CaptchaService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import jakarta.annotation.Resource
+import online.yudream.yudreamskin.service.CaptchaService
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/captcha")
-public class CaptchaController {
+class CaptchaController {
     @Resource
-    private CaptchaService captchaService;
+    private lateinit var captchaService: CaptchaService
 
     @GetMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void registerCaptcha(@RequestParam String email){
-        captchaService.sendCaptcha(email,"register","注册");
+    fun registerCaptcha(@RequestParam email: String?) {
+        captchaService.sendCaptcha(email, "register", "注册")
+    }
+
+    @GetMapping("/forget")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun forgetCaptcha(@RequestParam email: String?) {
+        captchaService.sendCaptcha(email, "forget", "找回密码")
     }
 }

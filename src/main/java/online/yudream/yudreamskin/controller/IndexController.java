@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -79,6 +78,26 @@ public class IndexController {
         }else {
             return "redirect:/register?error="+res.getMsg();
 
+        }
+    }
+
+    @GetMapping("/forget")
+    public String forget(Model model, HttpSession session) {
+        model.addAttribute("title", "找回密码");
+        if (session.getAttribute("user") != null) {
+            return "redirect:/";
+        } else {
+            return "view/home/forget";
+        }
+    }
+
+    @PostMapping("/forget")
+    public String forget(@RequestParam String email,@RequestParam String emailCode, @RequestParam String password, HttpSession session) {
+        R<User> res = authService.forgetPassword(email, password, emailCode);
+        if  (res.isSuccess()) {
+            return "redirect:/login";
+        } else {
+            return "redirect:/forget?error="+res.getMsg();
         }
     }
 
