@@ -1,6 +1,7 @@
 package online.yudream.yudreamskin.config;
 
 import jakarta.annotation.Resource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -30,6 +31,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .securityContext(secCtx -> secCtx
                         .securityContextRepository(new HttpSessionSecurityContextRepository())
                 )
@@ -38,8 +40,10 @@ public class SecurityConfig {
                                 excludedUrlsConfig.getUrls().forEach(url -> auth.requestMatchers(url).permitAll());
                                 auth.anyRequest().authenticated();
                 }).userDetailsService(userDetailsService)
+
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         return http.build();
     }
+
 }
