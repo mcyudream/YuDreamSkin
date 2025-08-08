@@ -15,8 +15,11 @@
                     </p>
                     <a th:href="@{/register}">
                         <button th:if="${session.user==null}" class="btn text-white btn-primary">前去注册</button>
+                    </a>
+                    <a th:href="@{/user}">
                         <button th:if="${session.user!=null}" class="btn text-white btn-primary">用户中心</button>
                     </a>
+
 
                 </div>
             </div>

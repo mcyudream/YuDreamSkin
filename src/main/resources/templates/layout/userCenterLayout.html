@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{index::page(~{::body})}" th:fragment="userCenter(userCenterContent)">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="h-full w-full flex flex-col">
+    <div th:replace="~{components/nav :: top-nav}"></div>
+    <main class="items-center justify-center flex-row flex-1 flex relative">
+        <img th:src="@{/assets/images/bg.png}" class="bg-fixed flex absolute w-full h-full blur" style="z-index: -999" alt="bg">
+        <div th:replace="~{components/nav :: user-sub-menu}"></div>
+        <div class="flex-auto p-6">
+
+            <div class="size-full overflow-y-auto">
+                <div th:replace="${userCenterContent}" class="w-full h-full"></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
