@@ -3,6 +3,7 @@ package online.yudream.yudreamskin.entity;
 import com.fasterxml.jackson.databind.ser.std.SerializableSerializer;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serial;
@@ -23,5 +24,7 @@ public class User implements Serializable {
     private String qq;
     private String nickname;
     private String bindProfile;
+    @DocumentReference(lazy = true)   // 只存 id，查询时自动 join
+    private List<Role> roles;
     private Map<String, GameProfile>  profiles; // uuid
 }

@@ -5,8 +5,71 @@
     <title>Title</title>
 </head>
 <body>
-    <div th:fragment="top-nav">
-        <div class="navbar bg-base-100 shadow-sm">
+<!-- 1. 最外层包裹 -->
+<div th:fragment="top-nav" >
+    <!-- 2. 汉堡按钮（大屏隐藏，小屏显示） -->
+    <div class="relative">
+        <div class="navbar bg-base-100 shadow-sm lg:hidden">
+            <div class="flex-1">
+                <a class="btn btn-ghost text-xl font-[Minecraft-title]">YuDream</a>
+            </div>
+            <div class="flex-none">
+                <!-- label + checkbox 实现无 JS 折叠 -->
+                <label for="nav-toggle" class="btn btn-square btn-ghost">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </label>
+            </div>
+        </div>
+
+        <!-- 3. 复用原导航，但给它加响应式类 -->
+        <input type="checkbox" id="nav-toggle" class="peer hidden">
+        <div class="hidden peer-checked:block lg:hidden bg-base-200">
+            <!-- 把原 <ul> 直接粘进来，删掉 menu-horizontal，让它垂直排布 -->
+            <ul class="menu p-2 space-y-1 w-full">
+                <!-- ↓↓↓ 下面就是原来那段 th:each 代码 ↓↓↓ -->
+                    <!--/*@thymesVar id="menu" type="online.yudream.yudreamskin.entity.MenuItem"*/-->
+                    <li class="w-full" th:each="menu:${@menuHolder.getHomeTopNav().menus}">
+                        <a class="w-full " th:if="${menu.child == null}" th:href="${menu.path}" >
+                            <span th:if="${menu.svgIcon!=null}" class="size-4 " th:utext="${menu.svgIcon}"></span>
+                            <span th:text="${menu.name}"></span>
+                        </a>
+                        <details th:if="${menu.child!=null}">
+                            <summary>
+                                <span th:if="${menu.svgIcon!=null}" class="size-4 " th:utext="${menu.svgIcon}"></span>
+                                <span th:text="${menu.name}"></span>
+                            </summary>
+                            <ul class="bg-base-100 rounded-t-none p-2 z-10">
+                                <li th:each="submenu:${menu.child}">
+                                    <a th:if="${submenu.child == null}" th:href="${submenu.path}" >
+                                        <span th:if="${submenu.svgIcon!=null}" class="size-4" th:utext="${submenu.svgIcon}"></span>
+                                        <span th:text="${submenu.name}"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li th:if="${session.user==null}">
+                        <a th:href="@{/login}">登录</a>
+                    </li>
+                    <li th:if="${session.user!=null}">
+                        <details>
+                            <summary th:text="${session.user.username}"></summary>
+                            <ul class="bg-base-100 rounded-t-none p-2 z-10">
+                                <li><a th:href="@{/user}">用户中心</a></li>
+                                <li><a th:href="@{/logout}">退出登录</a></li>
+                            </ul>
+                        </details>
+                    </li>
+
+
+            </ul>
+        </div>
+
+        <!-- 4. 大屏保持原样（完全不改动） -->
+        <div class="navbar bg-base-100 shadow-sm hidden lg:flex">
             <div class="flex-1">
                 <a class="btn btn-ghost text-xl font-[Minecraft-title]">YuDream</a>
             </div>
@@ -40,6 +103,7 @@
                         <details>
                             <summary th:text="${session.user.username}"></summary>
                             <ul class="bg-base-100 rounded-t-none p-2 z-10">
+                                <li><a th:href="@{/user}">用户中心</a></li>
                                 <li><a th:href="@{/logout}">退出登录</a></li>
                             </ul>
                         </details>
@@ -48,33 +112,39 @@
             </div>
         </div>
     </div>
+</div>
 
-<div th:fragment="user-sub-menu" class="w-auto h-full">
-    <ul class="menu bg-base-100 w-56 h-full">
+<div th:fragment="user-sub-menu" class="w-auto flex flex-col bg-base-100 h-full">
+    <ul class="menu sm:w-56 flex-auto">
+        <li class="hidden sm:flex menu-title">用户中心</li>
         <li th:each="menu:${@menuHolder.getUserSideMenu().menus}">
             <a th:if="${menu.child==null}" th:href="${menu.path}">
                 <span th:if="${menu.svgIcon!=null}" class="size-4 " th:utext="${menu.svgIcon}"></span>
-                <span th:text="${menu.name}"></span>
+                <span class="hidden sm:flex" th:text="${menu.name}"></span>
             </a>
+            <details th:if="${menu.child!=null}">
+                <summary>
+                    <span th:if="${menu.svgIcon!=null}" class="size-4 " th:utext="${menu.svgIcon}"></span>
+                    <span class="hidden sm:flex" th:text="${menu.name}"></span>
+                </summary>
+                <ul class="bg-base-100 rounded-t-none p-2 z-10">
+                    <li th:each="submenu:${menu.child}">
+                        <a th:if="${submenu.child == null}" th:href="${submenu.path}" >
+                            <span th:if="${submenu.svgIcon!=null}" class="size-4" th:utext="${submenu.svgIcon}"></span>
+                            <span class="hidden sm:flex" th:text="${submenu.name}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </details>
         </li>
-        <li >
-            <a>
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                    <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                Item 2
-            </a>
-        </li>
-
+        <th:block th:if="${@permissionUtils.checkPermissionLevel('admin',session.user.roles)}">
+            <li  class="hidden sm:flex menu-title">管理中心</li>
+            <li><a href="#">
+                <svg t="1754756079475" fill="currentColor"  class="icon size-4" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="20208" ><path d="M887.442286 0c71.972571 0 130.706286 55.149714 136.118857 125.44L1024 136.045714v751.908572a136.777143 136.777143 0 0 1-125.952 135.606857l-10.605714 0.438857H135.533714a135.899429 135.899429 0 0 1-135.094857-125.44L0 887.954286V136.045714C0 64.585143 55.149714 5.851429 125.001143 0.438857L135.533714 0h751.908572z m45.787428 453.778286H90.185143v444.708571c0 19.529143 13.385143 32.475429 37.083428 34.889143l8.265143 0.438857H887.954286c26.112 0 42.349714-11.117714 45.348571-29.476571l0.365714-5.851429-0.438857-444.708571z m-45.787428-363.52H135.826286c-25.380571 0.512-42.788571 24.283429-45.348572 65.097143l-0.292571 10.605714v189.293714H933.302857V165.961143c0-44.397714-15.36-71.387429-39.570286-75.264l-6.217142-0.512z m-697.563429 86.308571a46.811429 46.811429 0 0 1 46.518857 46.518857 46.811429 46.811429 0 0 1-46.518857 46.592 46.811429 46.811429 0 0 1-46.592-46.592 46.811429 46.811429 0 0 1 46.592-46.592z m143.213714 0a46.811429 46.811429 0 0 1 46.592 46.518857 46.811429 46.811429 0 0 1-46.592 46.592 46.811429 46.811429 0 0 1-46.518857-46.592 46.811429 46.811429 0 0 1 46.518857-46.592z m143.36 0a46.811429 46.811429 0 0 1 46.518858 46.518857 46.811429 46.811429 0 0 1-46.592 46.592 46.811429 46.811429 0 0 1-46.518858-46.592 46.811429 46.811429 0 0 1 46.518858-46.592z" fill="#595959" p-id="20209"></path></svg>
+                <span class="hidden sm:flex">
+                    管理面板
+                </span></a></li>
+        </th:block>
     </ul>
 </div>
 </body>

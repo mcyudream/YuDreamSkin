@@ -10,10 +10,9 @@
     <main class="items-center justify-center flex-row flex-1 flex relative">
         <img th:src="@{/assets/images/bg.png}" class="bg-fixed flex absolute w-full h-full blur" style="z-index: -999" alt="bg">
         <div th:replace="~{components/nav :: user-sub-menu}"></div>
-        <div class="flex-auto p-6">
-
-            <div class="size-full overflow-y-auto">
-                <div th:replace="${userCenterContent}" class="w-full h-full"></div>
+        <div class="flex-auto p-6 h-full">
+            <div class="h-full w-full overflow-y-auto bg-white/60 shadow p-4 rounded-2xl">
+                <div th:replace="${userCenterContent}" class="w-full h-full"> </div>
             </div>
         </div>
     </main>

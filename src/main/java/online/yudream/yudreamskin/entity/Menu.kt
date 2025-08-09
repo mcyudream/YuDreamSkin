@@ -11,10 +11,11 @@ import java.io.Serializable
 data class Menu(
 
     var type: String = "home-top-nav",
-    var menus: List<MenuItem>? = null
-) : Serializable {
+    var menus: List<MenuItem>? = null,
     @MongoId
     var id: String? = null
+) : Serializable {
+
 }
 
 data class MenuItem(
