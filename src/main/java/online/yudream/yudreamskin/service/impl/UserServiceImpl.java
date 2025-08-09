@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+
 public class UserServiceImpl implements UserService {
     @Value("${default-user.password}")
     private String defaultUserPassword;

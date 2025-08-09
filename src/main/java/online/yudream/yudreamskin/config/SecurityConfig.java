@@ -2,6 +2,7 @@ package online.yudream.yudreamskin.config;
 
 import jakarta.annotation.Resource;
 
+import online.yudream.yudreamskin.interceptor.MenuInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,11 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
     @Resource
     private SecurityExcludedUrlsConfig excludedUrlsConfig;
     @Resource
@@ -46,4 +49,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Resource
+    private MenuInterceptor menuInterceptor;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(menuInterceptor);
+    }
 }

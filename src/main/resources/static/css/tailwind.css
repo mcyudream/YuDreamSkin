@@ -1143,9 +1143,6 @@
   .max-w-md {
     max-width: var(--container-md);
   }
-  .flex-0 {
-    flex: 0;
-  }
   .flex-1 {
     flex: 1;
   }
@@ -1185,26 +1182,11 @@
   .overflow-y-auto {
     overflow-y: auto;
   }
-  .overflow-y-clip {
-    overflow-y: clip;
-  }
-  .overflow-y-hidden {
-    overflow-y: hidden;
-  }
-  .overflow-y-scroll {
-    overflow-y: scroll;
-  }
   .rounded {
     border-radius: 0.25rem;
   }
   .rounded-3xl {
     border-radius: var(--radius-3xl);
-  }
-  .rounded-box {
-    border-radius: var(--radius-box);
-  }
-  .rounded-box {
-    border-radius: var(--radius-box);
   }
   .rounded-t-none {
     border-top-left-radius: 0;
@@ -1223,9 +1205,6 @@
   }
   .bg-base-100 {
     background-color: var(--color-base-100);
-  }
-  .bg-base-200 {
-    background-color: var(--color-base-200);
   }
   .bg-black {
     background-color: var(--color-black);
