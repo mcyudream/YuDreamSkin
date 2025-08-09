@@ -8,7 +8,7 @@ spring:
       host: localhost
       port: 6379
     minio:
-      host: localhost
+      host: 192.168.31.208
       port: 9000
       username: minioadmin
       password: minioadmin

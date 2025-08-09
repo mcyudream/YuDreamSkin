@@ -1,0 +1,39 @@
+package online.yudream.yudreamskin.controller.usercenter
+
+import jakarta.annotation.Resource
+import jakarta.servlet.http.HttpSession
+import online.yudream.yudreamskin.common.R
+import online.yudream.yudreamskin.entity.User
+import online.yudream.yudreamskin.service.UserService
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
+
+@Controller
+@RequestMapping("/user")
+class UserProfileController {
+    @Resource
+    lateinit var userService: UserService
+
+    @GetMapping("/profile")
+    fun profile(): String {
+        return "view/user-center/profile"
+    }
+
+    @PostMapping("/profile/changeBase")
+    fun changeBaseInfo(session: HttpSession, @RequestParam nickname: String, @RequestParam avatar: MultipartFile): String{
+        val res : R<User> = userService.changeBaseInfo(session, nickname, avatar)
+        return when (res.code) {
+            200 -> {
+                "redirect:/user/profile?success"
+            }
+            else -> {
+                "redirect:/user/profile?error=" + res.msg
+
+            }
+        }
+    }
+}

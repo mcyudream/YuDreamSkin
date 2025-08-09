@@ -1,14 +1,15 @@
 package online.yudream.yudreamskin.utils;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
+import io.minio.http.Method;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -21,7 +22,8 @@ public class MinioUtils {
     private MinioClient minioClient;
     @Resource
     private String minioUrl;
-
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     public void initBucket(){
         try {
             boolean found =
@@ -54,7 +56,26 @@ public class MinioUtils {
         }
     }
 
-    public String getFile(String fileName){
-        return minioUrl + "/" + minioBucket + "/" + fileName;
+
+    public String getPreviewUrl(String fileName) {
+        try {
+            if (stringRedisTemplate.hasKey("previewUrl:"+fileName)) {
+                return stringRedisTemplate.opsForValue().get("previewUrl:"+fileName);
+            }
+            String url = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(minioBucket)
+                            .object(fileName)
+                            .expiry(3600)
+                            .build()
+
+            );
+            stringRedisTemplate.opsForValue().set("previewUrl:" +fileName, url, 3600, TimeUnit.SECONDS);
+            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "/assets/images/default_avtar.png";
+        }
     }
 }

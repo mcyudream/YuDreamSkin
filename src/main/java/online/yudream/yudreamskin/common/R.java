@@ -10,10 +10,10 @@ import java.net.URLEncoder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class R <T>{
-    private int code;
-    private String msg;
-    private T data;
-    private boolean success;
+    public int code;
+    public String msg;
+    public T data;
+    public boolean success;
 
     public static <T>R<T> ok(T data) {
         return new R<T>(200,"success",data,true);

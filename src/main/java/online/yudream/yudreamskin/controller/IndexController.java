@@ -1,6 +1,7 @@
 package online.yudream.yudreamskin.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import online.yudream.yudreamskin.common.R;
 import online.yudream.yudreamskin.entity.User;
@@ -34,8 +35,8 @@ public class IndexController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
-        R<User> res = authService.login(username, password, session);
+    public String login(@RequestParam String username, @RequestParam String password, HttpSession session, HttpServletRequest request) {
+        R<User> res = authService.login(username, password, session, request);
         if (res.isSuccess()) {
             User user = res.getData();
             session.setAttribute("user", user);

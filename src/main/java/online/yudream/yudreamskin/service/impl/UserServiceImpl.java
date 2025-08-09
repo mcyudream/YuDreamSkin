@@ -1,16 +1,20 @@
 package online.yudream.yudreamskin.service.impl;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import online.yudream.yudreamskin.common.R;
 import online.yudream.yudreamskin.common.enums.SystemRole;
 import online.yudream.yudreamskin.entity.Role;
 import online.yudream.yudreamskin.entity.User;
 import online.yudream.yudreamskin.mapper.RoleMapper;
 import online.yudream.yudreamskin.mapper.UserMapper;
 import online.yudream.yudreamskin.service.UserService;
+import online.yudream.yudreamskin.utils.MinioUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     @Resource
     private RoleMapper roleMapper;
+    @Resource
+    private MinioUtils minioUtils;
 
     @Override
     public void createDefaultUser() {
@@ -42,5 +48,22 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(defaultUserPassword));
             userMapper.save(user);
         }
+    }
+
+    @Override
+    public R<User> changeBaseInfo(HttpSession session, String nickname, MultipartFile avatar){
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return R.fail("无效会话!");
+        }
+        user.setNickname(nickname);
+        if (avatar != null) {
+            String avatarFile = minioUtils.uploadFile(avatar);
+            user.setAvatar(avatarFile);
+        }
+        user = userMapper.save(user);
+        session.setAttribute("user", user);
+        return R.ok(user);
+
     }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/userCenterLayout::userCenter(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><section>
+    <div class="flex flex-wrap space-x-2.5 space-y-2.5">
+        <div class="card bg-base-100 card-sm shadow-sm">
+            <div class="card-body">
+                <form th:action="@{/user/profile/changeBase}" method="post" enctype="multipart/form-data">
+                    <fieldset class="fieldset w-full">
+                        <legend class="fieldset-legend">基本信息</legend>
+
+                        <legend class="fieldset-legend">头像</legend>
+
+                        <div class="avatar mb-2">
+                            <div class="w-24 rounded">
+                                <img id="avatarPreview"
+                                     th:src="${@minioUtils.getPreviewUrl(session.user.avatar)}"
+                                     alt="头像预览" />
+                            </div>
+                        </div>
+
+                        <input name="avatar" id="avatarInput"
+                               type="file"
+                               class="file-input file-input-bordered file-input-sm w-full"
+                               accept="image/jpeg,image/png,image/webp"
+                               onchange="previewAvatar(this)" />
+
+                        <p class="label">仅支持 JPG / PNG / WebP，≤ 2 MB</p>
+
+                        <legend class="fieldset-legend">用户名</legend>
+                        <input  type="text" class="input w-full" disabled th:value="${session.user.username}" />
+                        <p class="label">唯一名称，不可更改</p>
+
+                        <legend class="fieldset-legend">昵称</legend>
+                        <input name="nickname" type="text" class="input w-full validator" required th:value="${session.user.nickname}" placeholder="修改个人昵称" />
+                        <p class="label">仅用于显示</p>
+
+                        <button type="submit" class="btn btn-success w-full mt-4">保存修改</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewAvatar(input) {
+            const file = input.files[0];
+            if (!file) return;
+            // 类型校验
+            const allow = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allow.includes(file.type)) {
+                alert('请上传 JPG / PNG / WebP 格式图片');
+                input.value = '';
+                return;
+            }
+
+            // 大小校验 2 MB
+            if (file.size > 2 * 1024 * 1024) {
+                alert('文件大小不能超过 2 MB');
+                input.value = '';
+                return;
+            }
+
+            // 预览
+            const url = URL.createObjectURL(file);
+            document.getElementById('avatarPreview').src = url;
+        }
+    </script>
+</section>
+</body>
+</html>

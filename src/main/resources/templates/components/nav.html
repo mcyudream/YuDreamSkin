@@ -56,7 +56,18 @@
                     </li>
                     <li th:if="${session.user!=null}">
                         <details>
-                            <summary th:text="${session.user.username}"></summary>
+                            <summary >
+                            <div class="avatar">
+                                <div class="w-6 rounded">
+                                    <img
+                                            th:src="${@minioUtils.getPreviewUrl(session.user.avatar)}"
+                                            alt="头像预览" />
+                                </div>
+                            </div>
+                            <span th:text="${session.user.nickname}">
+
+                                    </span>
+                        </summary>
                             <ul class="bg-base-100 rounded-t-none p-2 z-10">
                                 <li><a th:href="@{/user}">用户中心</a></li>
                                 <li><a th:href="@{/logout}">退出登录</a></li>
@@ -99,14 +110,27 @@
                     <li th:if="${session.user==null}">
                         <a th:href="@{/login}">登录</a>
                     </li>
-                    <li th:if="${session.user!=null}">
-                        <details>
-                            <summary th:text="${session.user.username}"></summary>
-                            <ul class="bg-base-100 rounded-t-none p-2 z-10">
-                                <li><a th:href="@{/user}">用户中心</a></li>
-                                <li><a th:href="@{/logout}">退出登录</a></li>
-                            </ul>
-                        </details>
+
+                    <li th:if="${session.user!=null}" class="flex-row flex">
+
+                            <details>
+                                <summary >
+                                    <div class="avatar">
+                                        <div class="w-6 rounded">
+                                            <img
+                                                    th:src="${@minioUtils.getPreviewUrl(session.user.avatar)}"
+                                                    alt="头像预览" />
+                                        </div>
+                                    </div>
+                                    <span th:text="${session.user.nickname}">
+
+                                    </span>
+                                </summary>
+                                <ul class="bg-base-100 rounded-t-none p-2 z-10">
+                                    <li><a th:href="@{/user}">用户中心</a></li>
+                                    <li><a th:href="@{/logout}">退出登录</a></li>
+                                </ul>
+                            </details>
                     </li>
                 </ul>
             </div>

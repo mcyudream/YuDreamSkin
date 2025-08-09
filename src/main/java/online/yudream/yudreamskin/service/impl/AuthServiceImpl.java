@@ -4,10 +4,12 @@ import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import online.yudream.yudreamskin.common.R;
+import online.yudream.yudreamskin.entity.IpEntity;
 import online.yudream.yudreamskin.entity.User;
 import online.yudream.yudreamskin.entity.WebauthnCredential;
 import online.yudream.yudreamskin.mapper.UserMapper;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Slf4j
@@ -45,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     private WebauthnCredentialMapper webauthnCredentialMapper;
 
     @Override
-    public R<User> login(String username, String password, HttpSession session) {
+    public R<User> login(String username, String password, HttpSession session, HttpServletRequest request) {
         User user = userMapper.findUserByUsername(username);
         if (user == null) {
             return R.fail(403, "不存在的用户");
@@ -53,6 +56,13 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return R.fail(403, "密码错误");
         }
+        String ip = request.getRemoteAddr();
+        IpEntity ipEntity = new IpEntity(ip, LocalDateTime.now());
+        if (user.getLoginIps().size()>5){
+            user.getLoginIps().remove(0);
+        }
+        user.getLoginIps().add(ipEntity);
+        userMapper.save(user);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         session.setAttribute(
