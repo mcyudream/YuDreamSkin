@@ -5,16 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-<!-- 1. 最外层包裹 -->
 <div th:fragment="top-nav" >
-    <!-- 2. 汉堡按钮（大屏隐藏，小屏显示） -->
     <div class="relative">
         <div class="navbar bg-base-100 shadow-sm lg:hidden">
             <div class="flex-1">
                 <a class="btn btn-ghost text-xl font-[Minecraft-title]">YuDream</a>
             </div>
             <div class="flex-none">
-                <!-- label + checkbox 实现无 JS 折叠 -->
                 <label for="nav-toggle" class="btn btn-square btn-ghost">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -24,12 +21,9 @@
             </div>
         </div>
 
-        <!-- 3. 复用原导航，但给它加响应式类 -->
         <input type="checkbox" id="nav-toggle" class="peer hidden">
         <div class="hidden peer-checked:block lg:hidden bg-base-200">
-            <!-- 把原 <ul> 直接粘进来，删掉 menu-horizontal，让它垂直排布 -->
             <ul class="menu p-2 space-y-1 w-full">
-                <!-- ↓↓↓ 下面就是原来那段 th:each 代码 ↓↓↓ -->
                     <!--/*@thymesVar id="menu" type="online.yudream.yudreamskin.entity.MenuItem"*/-->
                     <li class="w-full" th:each="menu:${@menuHolder.getHomeTopNav().menus}">
                         <a class="w-full " th:if="${menu.child == null}" th:href="${menu.path}" >
@@ -66,7 +60,7 @@
                             </div>
                             <span th:text="${session.user.nickname}">
 
-                                    </span>
+                            </span>
                         </summary>
                             <ul class="bg-base-100 rounded-t-none p-2 z-10">
                                 <li><a th:href="@{/user}">用户中心</a></li>

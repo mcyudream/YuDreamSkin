@@ -22,4 +22,9 @@ class CaptchaController {
     fun forgetCaptcha(@RequestParam email: String?) {
         captchaService.sendCaptcha(email, "forget", "找回密码")
     }
+    @GetMapping("/changeEmail")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun changeCaptcha(@RequestParam email: String?) {
+        captchaService.sendCaptcha(email, "change", "修改邮箱")
+    }
 }

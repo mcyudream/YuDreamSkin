@@ -32,7 +32,19 @@ class UserProfileController {
             }
             else -> {
                 "redirect:/user/profile?error=" + res.msg
+            }
+        }
+    }
 
+    @PostMapping("/profile/changeContact")
+    fun changeContact(session: HttpSession, @RequestParam email: String, @RequestParam emailCode: String, @RequestParam qq: String): String {
+        val res : R<User> = userService.changeContact(session, email, emailCode, qq)
+        return when (res.code) {
+            200 -> {
+                "redirect:/user/profile?success=true"
+            }
+            else -> {
+                "redirect:/user/profile?error=" + res.msg
             }
         }
     }

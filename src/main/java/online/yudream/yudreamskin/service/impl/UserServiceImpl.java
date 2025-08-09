@@ -10,7 +10,9 @@ import online.yudream.yudreamskin.entity.User;
 import online.yudream.yudreamskin.mapper.RoleMapper;
 import online.yudream.yudreamskin.mapper.UserMapper;
 import online.yudream.yudreamskin.service.UserService;
+import online.yudream.yudreamskin.utils.MailUtils;
 import online.yudream.yudreamskin.utils.MinioUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private RoleMapper roleMapper;
     @Resource
     private MinioUtils minioUtils;
+    @Autowired
+    private MailUtils mailUtils;
 
     @Override
     public void createDefaultUser() {
@@ -58,12 +62,31 @@ public class UserServiceImpl implements UserService {
         }
         user.setNickname(nickname);
         if (avatar != null) {
-            String avatarFile = minioUtils.uploadFile(avatar);
-            user.setAvatar(avatarFile);
+            if (avatar.getOriginalFilename() != null && !avatar.getOriginalFilename().isEmpty()) {
+                String avatarFile = minioUtils.uploadFile(avatar);
+                user.setAvatar(avatarFile);
+
+            }
+
         }
         user = userMapper.save(user);
         session.setAttribute("user", user);
         return R.ok(user);
+    }
 
+    @Override
+    public R<User> changeContact(HttpSession session, String email, String emailCode, String qq){
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return R.fail("无效会话!");
+        }
+        if (mailUtils.viaCaptcha(email,emailCode, "change")){
+            user.setEmail(email);
+            user.setQq(qq);
+            user = userMapper.save(user);
+        } else {
+            return R.fail("邮箱验证失败");
+        }
+        return R.ok(user);
     }
 }

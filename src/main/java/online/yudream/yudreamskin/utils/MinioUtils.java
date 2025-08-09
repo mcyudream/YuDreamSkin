@@ -74,7 +74,6 @@ public class MinioUtils {
             stringRedisTemplate.opsForValue().set("previewUrl:" +fileName, url, 3600, TimeUnit.SECONDS);
             return url;
         } catch (Exception e) {
-            e.printStackTrace();
             return "/assets/images/default_avtar.png";
         }
     }

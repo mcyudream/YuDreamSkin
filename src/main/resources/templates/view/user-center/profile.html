@@ -4,44 +4,82 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body><section>
-    <div class="flex flex-wrap space-x-2.5 space-y-2.5">
-        <div class="card bg-base-100 card-sm shadow-sm">
-            <div class="card-body">
-                <form th:action="@{/user/profile/changeBase}" method="post" enctype="multipart/form-data">
-                    <fieldset class="fieldset w-full">
-                        <legend class="fieldset-legend">基本信息</legend>
+<body>
+<section>
+    <div th:if="${param.error != null}" role="alert" class="alert w-full alert-error mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span th:text="|${param.error} ,请重新尝试!|"></span>
+    </div><div th:if="${param.success != null}" role="alert" class="alert w-full alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span th:text="操作成功"></span>
+    </div>
+        <div class="columns-1 sm:columns-2 2xl:columns-3 gap-4 space-y-4">
 
-                        <legend class="fieldset-legend">头像</legend>
+            <div class="break-inside-avoid  card bg-base-100 card-sm shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/user/profile/changeBase}" method="post" enctype="multipart/form-data">
+                        <fieldset class="fieldset w-full">
+                            <legend class="fieldset-legend">基本信息</legend>
 
-                        <div class="avatar mb-2">
-                            <div class="w-24 rounded">
-                                <img id="avatarPreview"
-                                     th:src="${@minioUtils.getPreviewUrl(session.user.avatar)}"
-                                     alt="头像预览" />
+                            <legend class="fieldset-legend">头像</legend>
+
+                            <div class="avatar mb-2">
+                                <div class="w-24 rounded">
+                                    <img id="avatarPreview"
+                                         th:src="${@minioUtils.getPreviewUrl(session.user.avatar)}"
+                                         alt="头像预览" />
+                                </div>
                             </div>
-                        </div>
 
-                        <input name="avatar" id="avatarInput"
-                               type="file"
-                               class="file-input file-input-bordered file-input-sm w-full"
-                               accept="image/jpeg,image/png,image/webp"
-                               onchange="previewAvatar(this)" />
+                            <input name="avatar" id="avatarInput"
+                                   type="file"
+                                   class="file-input file-input-bordered file-input-sm w-full"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   onchange="previewAvatar(this)" />
 
-                        <p class="label">仅支持 JPG / PNG / WebP，≤ 2 MB</p>
+                            <p class="label">仅支持 JPG / PNG / WebP，≤ 2 MB</p>
 
-                        <legend class="fieldset-legend">用户名</legend>
-                        <input  type="text" class="input w-full" disabled th:value="${session.user.username}" />
-                        <p class="label">唯一名称，不可更改</p>
+                            <legend class="fieldset-legend">用户名</legend>
+                            <input  type="text" class="input w-full" disabled th:value="${session.user.username}" />
+                            <p class="label">唯一名称，不可更改</p>
 
-                        <legend class="fieldset-legend">昵称</legend>
-                        <input name="nickname" type="text" class="input w-full validator" required th:value="${session.user.nickname}" placeholder="修改个人昵称" />
-                        <p class="label">仅用于显示</p>
+                            <legend class="fieldset-legend">昵称</legend>
+                            <input name="nickname" type="text" class="input w-full validator" required th:value="${session.user.nickname}" placeholder="修改个人昵称" />
+                            <p class="label">仅用于显示</p>
 
-                        <button type="submit" class="btn btn-success w-full mt-4">保存修改</button>
-                    </fieldset>
-                </form>
+                            <button type="submit" class="btn btn-success w-full mt-4">保存修改</button>
+                        </fieldset>
+                    </form>
+                </div>
             </div>
+            <div class="break-inside-avoid  card bg-base-100 card-sm shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/user/profile/changeContact}" method="post" enctype="multipart/form-data">
+                        <fieldset class="fieldset w-full">
+                            <legend class="fieldset-legend">联系方式</legend>
+                            <legend class="fieldset-legend">
+                                邮箱
+                            </legend>
+                            <input type="email" name="email" required  id="email-input" class="input w-full validator" placeholder="请输入邮箱" />
+                            <legend class="fieldset-legend">
+                                邮箱验证码
+                            </legend>
+                            <span class="join w-full">
+                            <input type="text" name="emailCode" class="input join-item" placeholder="请输入邮箱验证码" />
+                            <button type="button" class="btn join-item" id="send-email-code">发送验证码</button>
+                        </span>
+                            <legend class="fieldset-legend">
+                                QQ
+                            </legend>
+                            <input type="text" name="qq" class="input w-full validator" required th:value="${session.user.qq}" placeholder="请输入QQ" />
+                            <button type="submit" class="btn btn-success w-full mt-4">保存修改</button>
+                        </fieldset>
+                    </form>
+                </div>
         </div>
     </div>
 
@@ -68,7 +106,36 @@
             const url = URL.createObjectURL(file);
             document.getElementById('avatarPreview').src = url;
         }
+        document.getElementById('send-email-code').addEventListener('click', function () {
+            const email = document.getElementById('email-input').value.trim();
+            const btn = this;
+            if (!email) {
+                return;
+            }
+            // 防止重复点击
+            btn.disabled = true;
+            btn.textContent = '发送中...';
+            axios.get('/captcha/changeEmail', { params: { email:email } })
+                .then(() => {
+                    // 60 秒后可重发
+                    let sec = 60;
+                    const timer = setInterval(() => {
+                        btn.textContent = --sec + 's';
+                        if (sec <= 0) {
+                            clearInterval(timer);
+                            btn.disabled = false;
+                            btn.textContent = '发送验证码';
+                        }
+                    }, 1000);
+                })
+                .catch(err => {
+                    alert('发送失败：' + (err.response?.data || err.message));
+                    btn.disabled = false;
+                    btn.textContent = '发送验证码';
+                });
+        });
     </script>
+
 </section>
 </body>
 </html>

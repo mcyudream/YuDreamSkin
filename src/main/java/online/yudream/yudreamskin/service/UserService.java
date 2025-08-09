@@ -9,4 +9,6 @@ public interface UserService {
     void createDefaultUser();
 
     R<User> changeBaseInfo(HttpSession session, String nickname, MultipartFile avatar);
+
+    R<User> changeContact(HttpSession session, String email, String emailCode, String qq);
 }
