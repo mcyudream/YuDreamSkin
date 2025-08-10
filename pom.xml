@@ -115,6 +115,13 @@
             <artifactId>plugin-spring-boot-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+<!--        ip属地查询-->
+        <!-- https://mvnrepository.com/artifact/org.lionsoul/ip2region -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>2.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>

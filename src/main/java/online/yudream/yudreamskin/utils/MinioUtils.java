@@ -58,6 +58,10 @@ public class MinioUtils {
 
 
     public String getPreviewUrl(String fileName) {
+        return getPreviewUrl(fileName, "avatar");
+    }
+
+    public String getPreviewUrl(String fileName, String type) {
         try {
             if (stringRedisTemplate.hasKey("previewUrl:"+fileName)) {
                 return stringRedisTemplate.opsForValue().get("previewUrl:"+fileName);
@@ -74,7 +78,13 @@ public class MinioUtils {
             stringRedisTemplate.opsForValue().set("previewUrl:" +fileName, url, 3600, TimeUnit.SECONDS);
             return url;
         } catch (Exception e) {
-            return "/assets/images/default_avtar.png";
+            switch (type) {
+                case "bg":
+                    return "/assets/images/bg.png";
+                default:
+                    return "/assets/images/default_avtar.png";
+            }
+
         }
     }
 }

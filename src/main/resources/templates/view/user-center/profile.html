@@ -81,6 +81,22 @@
                     </form>
                 </div>
         </div>
+
+                    <ul class="list bg-base-100 rounded-box shadow-md break-inside-avoid ">
+                        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">近五次登录</li>
+
+                        <li class="list-row" th:each="ipItem:${session.user.loginIps}">
+                            <div class="list-col-grow">
+                                <div th:text="${ipItem.ip}"></div>
+                                <div class="text-xs uppercase font-semibold opacity-60" th:text="${@ipUtils.getIpAddress(ipItem.ip)}"></div>
+                            </div>
+                            <div  th:text="${#temporals.format(ipItem.time)} ">
+
+                            </div>
+                        </li>
+
+
+                    </ul>
     </div>
 
     <script>
