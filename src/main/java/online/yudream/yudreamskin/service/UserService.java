@@ -11,4 +11,6 @@ public interface UserService {
     R<User> changeBaseInfo(HttpSession session, String nickname, MultipartFile avatar);
 
     R<User> changeContact(HttpSession session, String email, String emailCode, String qq);
+
+    R<User> changePassword(HttpSession session, String rawPassword, String newPassword);
 }

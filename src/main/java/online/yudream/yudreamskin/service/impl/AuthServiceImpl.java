@@ -9,9 +9,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import online.yudream.yudreamskin.common.R;
+import online.yudream.yudreamskin.common.enums.SystemRole;
 import online.yudream.yudreamskin.entity.IpEntity;
+import online.yudream.yudreamskin.entity.Role;
 import online.yudream.yudreamskin.entity.User;
 import online.yudream.yudreamskin.entity.WebauthnCredential;
+import online.yudream.yudreamskin.mapper.RoleMapper;
 import online.yudream.yudreamskin.mapper.UserMapper;
 import online.yudream.yudreamskin.mapper.WebauthnCredentialMapper;
 import online.yudream.yudreamskin.service.AuthService;
@@ -28,6 +31,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -46,7 +51,8 @@ public class AuthServiceImpl implements AuthService {
     private RelyingParty relyingParty;
     @Resource
     private WebauthnCredentialMapper webauthnCredentialMapper;
-
+    @Resource
+    private RoleMapper roleMapper;
     @Override
     public R<User> login(String username, String password, HttpSession session, HttpServletRequest request) {
         User user = userMapper.findUserByUsername(username);
@@ -84,7 +90,10 @@ public class AuthServiceImpl implements AuthService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setEmail(email);
                 user.setNickname(username);
+                Role role = roleMapper.findRoleByName(Objects.requireNonNull(SystemRole.USER.getRole().getName()));
+                user.setRoles(List.of(role));
                 user = userMapper.save(user);
+
                 return R.ok(user);
             } else {
                 return R.fail(400, "验证码错误!");

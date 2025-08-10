@@ -89,4 +89,32 @@ public class UserServiceImpl implements UserService {
         }
         return R.ok(user);
     }
+
+    @Override
+    public R<User> changePassword(HttpSession session, String rawPassword, String newPassword){
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return R.fail("无效会话!");
+        }
+        if  (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return R.fail("原密码错误");
+        } else {
+            if (passwordVia(newPassword)){
+                user.setPassword(passwordEncoder.encode(newPassword));
+                user = userMapper.save(user);
+                return R.ok(user);
+            }
+            else {
+                return R.fail("密码校验失败");
+            }
+        }
+    }
+
+    private boolean passwordVia(String password) {
+        // 非空 & 长度 ≥ 8 & 同时包含字母和数字
+        return password != null
+                && password.length() >= 8
+                && password.matches(".*[A-Za-z].*")   // 至少一个字母
+                && password.matches(".*[0-9].*");     // 至少一个数字
+    }
 }

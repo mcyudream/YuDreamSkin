@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile
 
 @Controller
 @RequestMapping("/user")
-class UserProfileController {
+class ProfileUserController {
     @Resource
     lateinit var userService: UserService
 
@@ -27,12 +27,8 @@ class UserProfileController {
     fun changeBaseInfo(session: HttpSession, @RequestParam nickname: String, @RequestParam avatar: MultipartFile): String{
         val res : R<User> = userService.changeBaseInfo(session, nickname, avatar)
         return when (res.code) {
-            200 -> {
-                "redirect:/user/profile?success"
-            }
-            else -> {
-                "redirect:/user/profile?error=" + res.msg
-            }
+            200 -> "redirect:/user/profile?success"
+            else ->  "redirect:/user/profile?error=" + res.msg
         }
     }
 
@@ -40,12 +36,19 @@ class UserProfileController {
     fun changeContact(session: HttpSession, @RequestParam email: String, @RequestParam emailCode: String, @RequestParam qq: String): String {
         val res : R<User> = userService.changeContact(session, email, emailCode, qq)
         return when (res.code) {
-            200 -> {
-                "redirect:/user/profile?success=true"
-            }
-            else -> {
-                "redirect:/user/profile?error=" + res.msg
-            }
+            200 -> "redirect:/user/profile?success=true"
+            else -> "redirect:/user/profile?error=" + res.msg
         }
     }
+
+    @PostMapping("/profile/changePassword")
+    fun changePassword(session: HttpSession, @RequestParam rawPassword: String, @RequestParam newPassword: String): String {
+        val res : R<User> = userService.changePassword(session, rawPassword, newPassword)
+        return when (res.code) {
+            200 -> "redirect:/user/profile?success=true"
+            else -> "redirect:/user/profile?error=" + res.msg
+        }
+    }
+
+
 }

@@ -42,7 +42,14 @@
                                    onchange="previewAvatar(this)" />
 
                             <p class="label">仅支持 JPG / PNG / WebP，≤ 2 MB</p>
+                            <legend class="fieldset-legend">身份</legend>
+                            <div class="flex space-x-0.5 space-y-0.5">
+                                <div th:each="role : ${session.user.roles}"
+                                     th:class="${role.level == 'admin'} ? 'badge-error badge' : 'badge-info badge'"
+                                     th:text="${role.displayName}">
 
+                                </div>
+                            </div>
                             <legend class="fieldset-legend">用户名</legend>
                             <input  type="text" class="input w-full" disabled th:value="${session.user.username}" />
                             <p class="label">唯一名称，不可更改</p>
@@ -81,7 +88,24 @@
                     </form>
                 </div>
         </div>
-
+            <div class="break-inside-avoid  card bg-base-100 card-sm shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/user/profile/changePassword}" method="post">
+                        <fieldset class="fieldset w-full">
+                            <legend class="fieldset-legend">密码修改</legend>
+                            <legend class="fieldset-legend">
+                                原密码
+                            </legend>
+                            <input type="email" name="rawPassword" required  class="input w-full validator" placeholder="请输入原密码" />
+                            <legend class="fieldset-legend">
+                                新密码
+                            </legend>
+                            <input type="email" name="newPassword" required  class="input w-full validator" placeholder="请输入新密码" />
+                            <button type="submit" class="btn btn-success w-full mt-4">保存修改</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
                     <ul class="list bg-base-100 rounded-box shadow-md break-inside-avoid ">
                         <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">近五次登录</li>
 
