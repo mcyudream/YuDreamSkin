@@ -6,7 +6,7 @@
 </head>
 <body>
     <div class="h-full w-full flex flex-col">
-        <div th:replace="~{components/nav :: top-nav}"></div>
+        <div th:replace="~{components/nav :: top-nav(null)}"></div>
         <main class="items-center justify-center flex flex-1 relative">
             <img th:src="@{/assets/images/bg.png}" class="bg-fixed flex absolute w-full h-full blur" style="z-index: -999" alt="bg">
             <div th:replace="${homeContent}"></div>

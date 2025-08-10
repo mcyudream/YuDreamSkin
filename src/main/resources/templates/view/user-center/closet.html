@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/userCenterLayout::userCenter(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section>
+    <!-- name of each tab group should be unique -->
+    <div class="flex flex-wrap ">
+        <div class="tabs tabs-box flex-1">
+            <input type="radio" name="skin-tab" class="tab"  checked="checked"  aria-label="皮肤" />
+            <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 1</div>
+
+            <input type="radio" name="skin-tab" class="tab" aria-label="披风"/>
+            <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 2</div>
+
+            <input type="radio" name="skin-tab" class="tab" aria-label="上传材质" />
+            <div class="tab-content bg-base-100 border-base-300 p-6">
+                <form th:action="@{/user/closet/upload}" method="post" enctype="multipart/form-data">
+                    <fieldset class="fieldset w-full">
+                        <legend class="fieldset-legend">名称</legend>
+                        <input name="name" onchange="loadNameTag()" class="input w-full" >
+                        <legend class="fieldset-legend">材质类型</legend>
+                        <div class="filter">
+                            <input class="btn filter-reset" name="skinType" type="radio" value="×" aria-label="x"/>
+                            <input class="btn" onchange="loadModel()" type="radio" name="skinType" value="default" aria-label="史蒂夫" checked />
+                            <input class="btn" onchange="loadModel()" type="radio" name="skinType" value="slim" aria-label="艾利克斯" />
+                            <input class="btn" onchange="loadModel()" type="radio" name="skinType" value="cape" aria-label="披风"/>
+                        </div>
+                        <legend class="fieldset-legend">皮肤文件</legend>
+                        <input name="skinFile" id="skinInput"
+                               type="file"
+                               onchange="previewSkin(this)"
+                               class="file-input file-input-bordered file-input-sm w-full"
+                               accept="image/png"/>
+
+                        <p class="label">仅支持 JPG / PNG / WebP，≤ 2 MB</p>
+                        <legend class="fieldset-legend">私密设置</legend>
+                        <div class="filter">
+                            <input class="btn filter-reset" name="status"  type="radio" value="×" aria-label="x"/>
+                            <input class="btn" type="radio" name="status" value="0" aria-label="公开" checked/>
+                            <input class="btn" type="radio" name="status" value="1" aria-label="私密"/>
+                        </div>
+                        <button type="submit" class="btn btn-success w-full mt-4">上传材质</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <div >
+            <script src="/js/skinview3d.bundle.js"></script>
+
+            <canvas id="skinViewer" width="300" height="400"></canvas>
+            <input id="skin-url" type="hidden" th:value="${@minioUtils.getPreviewUrl('skin','skin')}">
+            <script th:inline="javascript">
+                const defaultSkinUrl = document.getElementById('skin-url').value;
+                const viewer = new skinview3d.SkinViewer({
+                    canvas: document.getElementById("skinViewer"),
+                    width: 300,
+                    height: 400,
+                });
+
+                const loadSkin = () => {
+                    viewer.loadSkin(document.getElementById("skin-url").value)
+                }
+                loadSkin()
+                const loadCape = () => {
+
+                    viewer.loadCape(document.getElementById("skin-url").value)
+                }
+                const loadNameTag = () => {
+                    const name = document.querySelector("input[name='name']").value
+                    if (name === "" || name === undefined){
+                        return;
+                    }
+                    viewer.nameTag = name
+                    loadModel()
+                }
+                const loadModel = () => {
+                    const skinType = document.querySelector('input[name="skinType"]:checked').value
+                    if (skinType === 'default' || skinType === 'slim') {
+                        viewer.loadCape(null)
+                        viewer.model = skinType
+                        loadSkin()
+                    } else if (skinType === 'cape') {
+                        viewer.loadSkin(defaultSkinUrl)
+                        loadCape()
+                    }
+                }
+                function previewSkin(input) {
+                    const file = input.files[0];
+                    if (!file) return;
+                    // 类型校验
+                    const allow = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!allow.includes(file.type)) {
+                        alert('请上传 JPG / PNG / WebP 格式图片');
+                        input.value = '';
+                        return;
+                    }
+
+                    // 大小校验 2 MB
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('文件大小不能超过 2 MB');
+                        input.value = '';
+                        return;
+                    }
+
+                    // 预览
+                    const url = URL.createObjectURL(file);
+                    document.getElementById('skin-url').value = url;
+                    loadModel()
+                }
+            </script>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

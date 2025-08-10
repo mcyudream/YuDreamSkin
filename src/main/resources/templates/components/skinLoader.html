@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="skinLoader(url, skinType, name)">
+        <script th:src="@{/js/skinview3d.bundle.js}"></script>
+        <canvas id="skinViewer" width="300" height="400"></canvas>
+        <script th:inline="javascript">
+
+            const viewer = new skinview3d.SkinViewer({
+                canvas: document.getElementById("skinViewer"),
+                width: 300,
+                height: 400,
+                skin:
+            });
+
+        </script>
+    </div>
+</body>
+</html>

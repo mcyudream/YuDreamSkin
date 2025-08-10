@@ -6,19 +6,8 @@
 </head>
 <body>
 <section>
-    <script th:src="@{/js/skinview3d.bundle.js}"></script>
     <input  type="hidden" id="skin-url" th:value="${@minioUtils.getPreviewUrl('skin.png','skin')}">
-    <canvas id="skinViewer" width="300" height="400"></canvas>
-    <script th:inline="javascript">
 
-        const viewer = new skinview3d.SkinViewer({
-            canvas: document.getElementById("skinViewer"),
-            width: 300,
-            height: 400,
-            skin: document.getElementById("skin-url").value,
-        });
-
-    </script>
 
 </section>
 </body>
