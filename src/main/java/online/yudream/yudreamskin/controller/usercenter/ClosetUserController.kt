@@ -1,10 +1,11 @@
 package online.yudream.yudreamskin.controller.usercenter
 
+import com.google.common.primitives.Ints
 import jakarta.annotation.Resource
-import jakarta.mail.Session
 import jakarta.servlet.http.HttpSession
 import online.yudream.yudreamskin.service.SkinService
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,7 +19,9 @@ class ClosetUserController  {
     lateinit var skinService: SkinService
 
     @GetMapping
-    fun closet():String {
+    fun closet(@RequestParam(defaultValue = "1") page: String, @RequestParam(defaultValue = "10") size: String, session: HttpSession, model: Model):String {
+        val res = skinService.getUserSkinPage(session, page.toInt(), size.toInt())
+        model.addAttribute("skinRes", res.data )
         return "/view/user-center/closet"
     }
 

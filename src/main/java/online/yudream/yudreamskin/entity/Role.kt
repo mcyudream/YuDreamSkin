@@ -13,6 +13,5 @@ data class Role  (
     val displayName: String? = null,
     val level: String? = null
 ) : Serializable {
-    @DocumentReference(lazy = true) // 只存 id，查询时自动 join
-    val  permission: List<Permission>? = null;
+    @DocumentReference(lazy = true) val permission: List<Permission>? = null
 }

@@ -8,9 +8,18 @@
 <section>
     <!-- name of each tab group should be unique -->
     <div class="flex flex-wrap ">
+        <script src="/js/skinview3d.bundle.js"></script>
         <div class="tabs tabs-box flex-1">
             <input type="radio" name="skin-tab" class="tab"  checked="checked"  aria-label="皮肤" />
-            <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 1</div>
+            <div class="tab-content bg-base-100 border-base-300 p-6">
+                <div class="card w-64" th:each="item:${skinRes.content}">
+                    <div class="card-body">
+                        <span  th:text="${item.skin}"></span>
+                        <div th:replace="~{components/skinLoader::skinRender('test', ${@minioUtils.getPreviewUrl('skin','skin')})}">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <input type="radio" name="skin-tab" class="tab" aria-label="披风"/>
             <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 2</div>
@@ -49,10 +58,10 @@
         </div>
 
         <div >
-            <script src="/js/skinview3d.bundle.js"></script>
 
             <canvas id="skinViewer" width="300" height="400"></canvas>
             <input id="skin-url" type="hidden" th:value="${@minioUtils.getPreviewUrl('skin','skin')}">
+            <script src="/js/skinUtils.js"></script>
             <script th:inline="javascript">
                 const defaultSkinUrl = document.getElementById('skin-url').value;
                 const viewer = new skinview3d.SkinViewer({

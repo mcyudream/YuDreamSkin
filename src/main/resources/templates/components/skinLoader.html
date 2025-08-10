@@ -5,18 +5,31 @@
     <title>Title</title>
 </head>
 <body>
-    <div th:fragment="skinLoader(url, skinType, name)">
-        <script th:src="@{/js/skinview3d.bundle.js}"></script>
-        <canvas id="skinViewer" width="300" height="400"></canvas>
+    <div th:fragment="skinRender(id, url)">
+        <img alt="render" th:id="${id}">
         <script th:inline="javascript">
+            var id = /*[[${id}]]*/ ""
+            var url = /*[[${url}]]*/ ""
+            console.log(id,url)
+            const img = document.getElementById(id)
+            const getSkinPreview = async (url) => {
+                const skinViewer = new skinview3d.SkinViewer({
+                    width: 200,
+                    height: 300,
+                    renderPaused: true,
 
-            const viewer = new skinview3d.SkinViewer({
-                canvas: document.getElementById("skinViewer"),
-                width: 300,
-                height: 400,
-                skin:
-            });
-
+                });
+                await skinViewer.loadSkin(url);
+                skinViewer.camera.rotation.x = -0.62;
+                skinViewer.camera.rotation.y = 0.534;
+                skinViewer.camera.rotation.z = 0.348;
+                skinViewer.camera.position.x = 30.5;
+                skinViewer.camera.position.y = 28.0;
+                skinViewer.camera.position.z = 42.0;
+                skinViewer.render();
+                img.src = skinViewer.canvas.toDataURL();
+            }
+        getSkinPreview(url)
         </script>
     </div>
 </body>

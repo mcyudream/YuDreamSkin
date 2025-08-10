@@ -31,6 +31,7 @@ spring:
       "mail.smtp.starttls.required": true
 server:
   address: 0.0.0.0
+  port: 8080
 default-user:
   username: admin
   password: admin
