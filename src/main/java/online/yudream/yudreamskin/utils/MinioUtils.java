@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.concurrent.TimeUnit;
-
-
 @Component
 public class MinioUtils {
 
@@ -62,28 +59,28 @@ public class MinioUtils {
     }
 
     public String getPreviewUrl(String fileName, String type) {
-        try {
-            if (stringRedisTemplate.hasKey("previewUrl:"+fileName)) {
-                return stringRedisTemplate.opsForValue().get("previewUrl:"+fileName);
-            }
-            String url = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.GET)
-                            .bucket(minioBucket)
-                            .object(fileName)
-                            .expiry(3600)
-                            .build()
+            try {
+                // 1. 先判断对象是否存在
+                minioClient.statObject(
+                        StatObjectArgs.builder()
+                                .bucket(minioBucket)
+                                .object(fileName)
+                                .build());
+                // 2. 存在则生成 URL
+                return minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs.builder()
+                                .method(Method.GET)
+                                .bucket(minioBucket)
+                                .object(fileName)
+                                .expiry(3600)
+                                .build());
 
-            );
-            stringRedisTemplate.opsForValue().set("previewUrl:" +fileName, url, 3600, TimeUnit.SECONDS);
-            return url;
         } catch (Exception e) {
-            switch (type) {
-                case "bg":
-                    return "/assets/images/bg.png";
-                default:
-                    return "/assets/images/default_avtar.png";
-            }
+            return switch (type) {
+                case "skin" -> "/assets/images/skin.png";
+                case "bg" -> "/assets/images/bg.png";
+                default -> "/assets/images/default_avtar.png";
+            };
 
         }
     }

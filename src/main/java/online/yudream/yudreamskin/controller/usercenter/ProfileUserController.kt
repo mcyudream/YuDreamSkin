@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/user/profile")
 class ProfileUserController {
     @Resource
     lateinit var userService: UserService
 
-    @GetMapping("/profile")
+    @GetMapping
     fun profile(): String {
         return "view/user-center/profile"
     }
 
-    @PostMapping("/profile/changeBase")
+    @PostMapping("/changeBase")
     fun changeBaseInfo(session: HttpSession, @RequestParam nickname: String, @RequestParam avatar: MultipartFile): String{
         val res : R<User> = userService.changeBaseInfo(session, nickname, avatar)
         return when (res.code) {
@@ -32,7 +32,7 @@ class ProfileUserController {
         }
     }
 
-    @PostMapping("/profile/changeContact")
+    @PostMapping("/changeContact")
     fun changeContact(session: HttpSession, @RequestParam email: String, @RequestParam emailCode: String, @RequestParam qq: String): String {
         val res : R<User> = userService.changeContact(session, email, emailCode, qq)
         return when (res.code) {
@@ -41,7 +41,7 @@ class ProfileUserController {
         }
     }
 
-    @PostMapping("/profile/changePassword")
+    @PostMapping("/changePassword")
     fun changePassword(session: HttpSession, @RequestParam rawPassword: String, @RequestParam newPassword: String): String {
         val res : R<User> = userService.changePassword(session, rawPassword, newPassword)
         return when (res.code) {

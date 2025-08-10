@@ -46,7 +46,10 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             log.info("Creating default user: {}, {}", defaultUserUsername, defaultUserPassword);
             user = new User();
-            Role role = roleMapper.findRoleByName(Objects.requireNonNull(SystemRole.SUPER_ADMIN.getRole().getName()));
+            Role role = roleMapper.findById(Objects.requireNonNull(SystemRole.SUPER_ADMIN.getRole().getId())).orElse(null);
+            if (role == null) {
+                throw new RuntimeException("不存在的角色");
+            }
             user.setRoles(List.of(role));
             user.setUsername(defaultUserUsername);
             user.setPassword(passwordEncoder.encode(defaultUserPassword));

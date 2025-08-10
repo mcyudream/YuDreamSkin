@@ -21,7 +21,6 @@ data class Menu(
 data class MenuItem(
     var name: String? = null,
     var svgIcon: String? = null,
-    var index: Int,
     var path: String = "/",
     var child: List<MenuItem>? = null,
 ) : Serializable

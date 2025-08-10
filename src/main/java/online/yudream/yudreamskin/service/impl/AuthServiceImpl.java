@@ -90,7 +90,10 @@ public class AuthServiceImpl implements AuthService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setEmail(email);
                 user.setNickname(username);
-                Role role = roleMapper.findRoleByName(Objects.requireNonNull(SystemRole.USER.getRole().getName()));
+                Role role = roleMapper.findById(Objects.requireNonNull(SystemRole.USER.getRole().getId())).orElse(null);
+                if (role == null) {
+                    throw new RuntimeException("不存在的角色!");
+                }
                 user.setRoles(List.of(role));
                 user = userMapper.save(user);
 

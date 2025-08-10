@@ -9,7 +9,6 @@ import java.io.Serializable
 data class Role  (
     @MongoId
     val id: String ?= null,
-    val name: String? = null,
     val description: String? = null,
     val displayName: String? = null,
     val level: String? = null
