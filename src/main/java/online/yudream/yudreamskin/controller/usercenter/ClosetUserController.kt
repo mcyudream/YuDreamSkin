@@ -19,8 +19,8 @@ class ClosetUserController  {
     lateinit var skinService: SkinService
 
     @GetMapping
-    fun closet(@RequestParam(defaultValue = "1") page: String, @RequestParam(defaultValue = "10") size: String, session: HttpSession, model: Model):String {
-        val res = skinService.getUserSkinPage(session, page.toInt(), size.toInt())
+    fun closet(@RequestParam(defaultValue = "1") page: String, @RequestParam(defaultValue = "10", ) size: String,@RequestParam(defaultValue = "all") type:String, session: HttpSession, model: Model):String {
+        val res = skinService.getUserSkinPage(session, page.toInt(), size.toInt(),type)
         model.addAttribute("skinRes", res.data )
         return "/view/user-center/closet"
     }

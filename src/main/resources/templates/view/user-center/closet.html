@@ -10,19 +10,53 @@
     <div class="flex flex-wrap ">
         <script src="/js/skinview3d.bundle.js"></script>
         <div class="tabs tabs-box flex-1">
-            <input type="radio" name="skin-tab" class="tab"  checked="checked"  aria-label="皮肤" />
-            <div class="tab-content bg-base-100 border-base-300 p-6">
-                <div class="card w-64" th:each="item:${skinRes.content}">
-                    <div class="card-body">
-                        <span  th:text="${item.skin}"></span>
-                        <div th:replace="~{components/skinLoader::skinRender('test', ${@minioUtils.getPreviewUrl('skin','skin')})}">
+            <input type="radio" name="skin-tab" class="tab"  checked="checked"  aria-label="材质" />
+            <div class="tab-content bg-base-100 border-base-300 p-6 space-y-6">
+                <div class=" flex flex-wrap gap-6 w-full justify-start">
+                    <div class="card w-64 bg-base-300 shadow rounded items-start "
+                         th:each="item : ${skinRes.content}"
+                         th:with="url=${@minioUtils.getPreviewUrl(item.skin.fileName,'skin')}"
+                         th:data-url="${url}"
+                         th:data-type="${item.skin.skinType}"
+                         th:data-metadata="${@objectMapper.writeValueAsString(item.skin.metadata)}"
+                         th:data-name="${item.skin.name}"
+                         onclick="onSkinClick(this)">
+
+                        <figure th:text="${item.skin.name}" class="w-full bg-base-200 p-4"></figure>
+                        <div class="card-body p-0">
+                            <div th:if="${item.skin.skinType=='skin'}"
+                                 th:insert="~{components/skinLoader::skinRender(${item.id}, ${url})}">
+                            </div>
+                            <div th:if="${item.skin.skinType=='cape'}"
+                                 th:insert="~{components/skinLoader::capeRender(${item.id}, ${url})}">
+                                1
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- 分页条 -->
+                <div class="join flex justify-center items-center space-x-2"
+                     th:with="page=${param.page==null?1:#numbers.formatInteger(param.page,1)},
+              size=${param.size==null?10:#numbers.formatInteger(param.size,1)}">
+
+                    <span class="text-sm" th:text="|共 ${skinRes.totalElements} 条 ${size} 条/页|"></span>
+
+                    <a class="join-item btn"
+                       th:classappend="${page==1} ? 'btn-disabled'"
+                       th:href="@{/user/closet(page=${page - 1}, size=${size})}">
+                        上一页
+                    </a>
+                    <button class="join-item btn btn-active" th:text="${page}"></button>
+                    <a class="join-item btn"
+                       th:classappend="${page==skinRes.totalPages} ? 'btn-disabled'"
+                       th:href="@{/user/closet(page=${page + 1}, size=${size})}">
+                        下一页
+                    </a>
+
+                    <span class="text-sm" th:text="|共 ${skinRes.totalPages} 页|"></span>
+                </div>
             </div>
 
-            <input type="radio" name="skin-tab" class="tab" aria-label="披风"/>
-            <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 2</div>
 
             <input type="radio" name="skin-tab" class="tab" aria-label="上传材质" />
             <div class="tab-content bg-base-100 border-base-300 p-6">
@@ -57,7 +91,7 @@
             </div>
         </div>
 
-        <div >
+        <div class="p-6">
 
             <canvas id="skinViewer" width="300" height="400"></canvas>
             <input id="skin-url" type="hidden" th:value="${@minioUtils.getPreviewUrl('skin','skin')}">
@@ -69,6 +103,20 @@
                     width: 300,
                     height: 400,
                 });
+                const onSkinClick = (skin) => {
+                    const url = skin.dataset.url
+                    const skinType = skin.dataset.type;
+                    const metadata = JSON.parse(skin.dataset.metadata);
+                    viewer.nameTag = skin.dataset.name;
+                    if (skinType === 'skin'){
+                        viewer.loadCape(null)
+                        viewer.model = metadata['model']??'default'
+                        viewer.loadSkin(url)
+                    } else {
+                        viewer.loadSkin(defaultSkinUrl)
+                        viewer.loadCape(url)
+                    }
+                }
 
                 const loadSkin = () => {
                     viewer.loadSkin(document.getElementById("skin-url").value)

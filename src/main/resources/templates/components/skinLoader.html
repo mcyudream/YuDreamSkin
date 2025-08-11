@@ -10,7 +10,6 @@
         <script th:inline="javascript">
             var id = /*[[${id}]]*/ ""
             var url = /*[[${url}]]*/ ""
-            console.log(id,url)
             const img = document.getElementById(id)
             const getSkinPreview = async (url) => {
                 const skinViewer = new skinview3d.SkinViewer({
@@ -30,6 +29,33 @@
                 img.src = skinViewer.canvas.toDataURL();
             }
         getSkinPreview(url)
+        </script>
+    </div>
+    <div th:fragment="capeRender(id, url)">
+        <img alt="render" th:id="${id}">
+        <script th:inline="javascript">
+            var id = /*[[${id}]]*/ ""
+            var url = /*[[${url}]]*/ ""
+            const imgCape = document.getElementById(id)
+            const getCapePreview = async (url) => {
+                const skinViewer = new skinview3d.SkinViewer({
+                    width: 200,
+                    height: 300,
+                    renderPaused: true,
+
+                });
+                await skinViewer.loadSkin("/assets/images/skin.png");
+                await skinViewer.loadCape(url);
+                skinViewer.camera.position.x = 4.938631834793527
+                skinViewer.camera.position.y = -2.2015114371038025;
+                skinViewer.camera.position.z = -43.48104911405955;
+                skinViewer.camera.rotation.y = 0.11295311056751813;
+                skinViewer.camera.rotation.z = -3.135885881412752;
+                skinViewer.camera.rotation.x = 3.09100433657156;
+                skinViewer.render();
+                imgCape.src = skinViewer.canvas.toDataURL();
+            }
+            getCapePreview(url)
         </script>
     </div>
 </body>

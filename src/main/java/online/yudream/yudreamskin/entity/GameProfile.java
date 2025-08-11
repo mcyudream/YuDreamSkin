@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 
+
 @Data
 public class GameProfile {
     private String uuid;

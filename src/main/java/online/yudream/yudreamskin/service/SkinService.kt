@@ -9,6 +9,6 @@ import org.springframework.web.multipart.MultipartFile
 
 interface SkinService {
     fun uploadSkin(session: HttpSession, skinFile: MultipartFile, name: String, status: Int, skinType: String): R<Skin?>
-    fun getUserSkinPage(session: HttpSession, page: Int, size: Int): R<Page<Closet>>
     fun findClosetById(id: String): Closet?
+    fun getUserSkinPage(session: HttpSession, page: Int, size: Int, type: String): R<Page<Closet>>
 }

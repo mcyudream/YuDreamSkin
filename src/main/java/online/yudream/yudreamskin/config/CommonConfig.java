@@ -1,5 +1,7 @@
 package online.yudream.yudreamskin.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,5 +22,11 @@ public class CommonConfig {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .findAndRegisterModules()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

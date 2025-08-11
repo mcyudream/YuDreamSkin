@@ -47,13 +47,15 @@ class SkinServiceImpl : SkinService {
         return R.ok<Skin>(skinEntity)
     }
 
-    override fun getUserSkinPage(session: HttpSession, page: Int, size: Int) : R<Page<Closet>> {
+    override fun getUserSkinPage(session: HttpSession, page: Int, size: Int, type: String) : R<Page<Closet>> {
         val user = session.getAttribute("user") as User?
         if (user == null) {
             return R.fail("无效会话")
         }
-        val res = closetMapper.findClosetsByUser(user, PageRequest.of(page-1, size))
-        return R.ok(res)
+
+            val res = closetMapper.findClosetsByUser(user, PageRequest.of(page-1, size))
+            return R.ok(res)
+
     }
 
     override fun  findClosetById( id: String): Closet? {
