@@ -9,8 +9,18 @@
     <script src="/js/skinview3d.bundle.js"></script>
     <div class="flex flex-wrap">
         <div class="flex-1 space-y-6">
-            <div class="join">
+            <div class="join flex flex-row">
                 <button class="btn join-item" onclick="openCreateRoleModal()">创建角色</button>
+                <input class="join-item input flex-1" placeholder="输入以搜索" oninput="filterTable(this)">
+                <script>
+                    function filterTable(dom) {
+                        const kw = dom.value.trim().toLowerCase();
+                        document.querySelectorAll('tr.profile-row').forEach(row => {
+                            const txt = row.getAttribute('data-keywords');
+                            row.style.display = txt.includes(kw) ? '' : 'none';
+                        });
+                    }
+                </script>
                 <input type="checkbox" id="create-role-modal" class="modal-toggle" />
                 <div class="modal" role="dialog">
                     <div class="modal-box">
@@ -60,24 +70,53 @@
                         <th>ID</th>
                         <th>角色名称</th>
                         <th>上次登录时间</th>
+                        <th>创建时间</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- row 1 -->
-                    <tr th:each="profile:${session.user.profiles}">
-                        <th th:text="${profile.key}"></th>
-                        <td>Cy Ganderton</td>
-                        <td>Quality Control Specialist</td>
-                        <td>Blue</td>
+                    <tr class="profile-row" th:each="profile:${@gameProfileServiceImpl.getUserProfile(session.user, null)}" th:attr="data-keywords=${#strings.toLowerCase(profile.name + ' ' + profile.uuid)}">
+                        <td class="truncate"
+                            th:text="${profile.uuid}"
+                            th:title="${profile.uuid}">
+                            uuid
+                        </td>
+
+                        <td class=" truncate"
+                            th:text="${profile.name}"
+                            th:title="${profile.name}">
+                            name
+                        </td>
+
+                        <td class="truncate"
+                            th:text="${#temporals.format(profile.lastJoin, 'yyyy-MM-dd HH:mm')}"
+                            th:title="${#temporals.format(profile.lastJoin, 'yyyy-MM-dd HH:mm')}">
+                            lastJoin
+                        </td>
+
+                        <td class=" truncate"
+                            th:text="${#temporals.format(profile.createTime, 'yyyy-MM-dd HH:mm')}"
+                            th:title="${#temporals.format(profile.createTime, 'yyyy-MM-dd HH:mm')}">
+                            createTime
+                        </td>
+
+                        <td class="truncate join">
+                                <button class="join-item btn btn-info">查看皮肤</button>
+                                <button class="join-item btn btn-error">删除角色</button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="p-6">
+        <div class="p-6 flex flex-col space-y-6">
 
             <canvas id="skinViewer" width="300" height="400"></canvas>
+                <a th:href="@{/user/closet}" class="w-full">
+                    <button class="flex-1 btn btn-info w-full">更换材质</button>
+                </a>
+
             <input id="skin-url" type="hidden" th:value="${@minioUtils.getPreviewUrl('skin','skin')}">
             <script src="/js/skinUtils.js"></script>
             <script th:inline="javascript">

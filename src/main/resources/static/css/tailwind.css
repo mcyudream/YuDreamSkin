@@ -2062,6 +2062,18 @@
   .w-full {
     width: 100%;
   }
+  .max-w-16 {
+    max-width: calc(var(--spacing) * 16);
+  }
+  .max-w-24 {
+    max-width: calc(var(--spacing) * 24);
+  }
+  .max-w-28 {
+    max-width: calc(var(--spacing) * 28);
+  }
+  .max-w-36 {
+    max-width: calc(var(--spacing) * 36);
+  }
   .max-w-lg {
     max-width: var(--container-lg);
   }
@@ -2185,6 +2197,11 @@
     :where(& > :not(:last-child)) {
       border-color: currentcolor;
     }
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .overflow-auto {
     overflow: auto;
@@ -2583,6 +2600,10 @@
   .badge-info {
     --badge-color: var(--color-info);
     --badge-fg: var(--color-info-content);
+  }
+  .btn-error {
+    --btn-color: var(--color-error);
+    --btn-fg: var(--color-error-content);
   }
   .btn-info {
     --btn-color: var(--color-info);

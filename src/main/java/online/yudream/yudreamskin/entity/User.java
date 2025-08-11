@@ -30,7 +30,6 @@ public class User implements Serializable {
     private String bindProfile;
     @DocumentReference(lazy = true)   // 只存 id，查询时自动 join
     private List<Role> roles;
-    private Map<String, GameProfile>  profiles; // uuid
     private List<IpEntity> loginIps =  new ArrayList<>();
     @CreatedDate
     private LocalDateTime createTime;
@@ -109,13 +108,9 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public Map<String, GameProfile> getProfiles() {
-        return profiles;
-    }
 
-    public void setProfiles(Map<String, GameProfile> profiles) {
-        this.profiles = profiles;
-    }
+
+
 
     public List<IpEntity> getLoginIps() {
         return loginIps;
