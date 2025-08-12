@@ -13,4 +13,6 @@ public interface GameProfileMapper extends MongoRepository<GameProfile, String> 
     List<GameProfile> findGameProfileByUserAndNameLike(User user, String name);
 
     GameProfile findGameProfileByUserAndUuid(User user, String uuid);
+
+    User findGameProfileByName(String name);
 }

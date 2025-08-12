@@ -1,7 +1,7 @@
 package online.yudream.yudreamskin.entity;
 
 import com.fasterxml.jackson.databind.ser.std.SerializableSerializer;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 @Document("tb_user")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@ToString
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

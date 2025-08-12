@@ -1,7 +1,6 @@
 package online.yudream.yudreamskin.entity;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -13,6 +12,9 @@ import java.util.Date;
 
 @Document("tb_game_profile")
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class GameProfile {
     @MongoId
     private String uuid;

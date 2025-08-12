@@ -40,10 +40,23 @@ class GameProfileServiceImpl : GameProfileService {
 
     override fun getUserProfile(user: User, search: String?): List<GameProfile> {
         if (search == null || search.isEmpty()) {
-            println(gameProfileMapper.findGameProfileByUser(user))
             return gameProfileMapper.findGameProfileByUser(user)
         } else{
             return gameProfileMapper.findGameProfileByUserAndNameLike(user, "%${search}%")
+        }
+    }
+
+    override fun deleteProfile(session: HttpSession, profileId: String) :R<GameProfile> {
+        val user = session.getAttribute("user") as User?
+        if (user == null) {
+            return R.fail("无效会话!")
+        }
+        val profile = gameProfileMapper.findGameProfileByUserAndUuid(user, profileId)
+        if (profile == null) {
+            return R.fail("无效角色")
+        } else{
+            gameProfileMapper.delete(profile)
+            return R.ok(profile)
         }
     }
 }

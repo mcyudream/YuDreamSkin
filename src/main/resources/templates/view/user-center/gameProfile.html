@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/adminLayout::userCenter(~{::section})}">
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/userCenterLayout::userCenter(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -89,14 +89,17 @@
                             createTime
                         </td>
 
-                        <td class="truncate join" th:with="url=${@minioUtils.getPreviewUrl(profile.skin.fileName,'skin')}"  >
-                                <button th:with="capeUrl=${(profile.cape != null && profile.cape.fileName != null ? profile.cape.fileName : '')==''?'':@minioUtils.getPreviewUrl(profile.cape.fileName,'skin')}" class="join-item btn btn-info"
-                                        th:data-skin="${url}"
-                                        th:data-cape="${capeUrl}"
-                                        th:data-metadata="${@objectMapper.writeValueAsString(profile.skin.metadata)}"
-                                        th:data-name="${profile.name}"
-                                        onclick="onPreviewTextures(this)">查看皮肤</button>
-                                <button class="join-item btn btn-error">删除角色</button>
+                        <td class="truncate " th:with="url=${@minioUtils.getPreviewUrl(profile.skin.fileName,'skin')}"  >
+                                <form class="join" method="post" th:action="@{/user/gameProfile/delete}">
+                                    <input type="hidden" name="profileId" th:value="${profile.uuid}">
+                                    <button type="button" th:with="capeUrl=${(profile.cape != null && profile.cape.fileName != null ? profile.cape.fileName : '')==''?'':@minioUtils.getPreviewUrl(profile.cape.fileName,'skin')}" class="join-item btn btn-info"
+                                            th:data-skin="${url}"
+                                            th:data-cape="${capeUrl}"
+                                            th:data-metadata="${@objectMapper.writeValueAsString(profile.skin.metadata)}"
+                                            th:data-name="${profile.name}"
+                                            onclick="onPreviewTextures(this)">查看皮肤</button>
+                                    <button type="submit" class="join-item btn btn-error">删除角色</button>
+                                </form>
                         </td>
                     </tr>
                     </tbody>

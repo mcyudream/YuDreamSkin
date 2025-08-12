@@ -3,9 +3,11 @@ package online.yudream.yudreamskin.controller.usercenter
 import jakarta.annotation.Resource
 import jakarta.servlet.http.HttpSession
 import online.yudream.yudreamskin.common.R
+import online.yudream.yudreamskin.entity.GameProfile
 import online.yudream.yudreamskin.entity.User
 import online.yudream.yudreamskin.service.UserService
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping

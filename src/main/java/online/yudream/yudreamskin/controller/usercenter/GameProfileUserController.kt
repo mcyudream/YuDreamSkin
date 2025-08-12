@@ -2,8 +2,11 @@ package online.yudream.yudreamskin.controller.usercenter
 
 import jakarta.annotation.Resource
 import jakarta.servlet.http.HttpSession
+import online.yudream.yudreamskin.common.R
+import online.yudream.yudreamskin.entity.GameProfile
 import online.yudream.yudreamskin.service.GameProfileService
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,6 +30,16 @@ class GameProfileUserController {
         return when(res.code){
             200 -> "redirect:/user/gameProfile?success"
             else -> "redirect:/user/gameProfile?error="+res.msg
+        }
+    }
+
+
+    @PostMapping("/delete")
+    fun delete(session: HttpSession, profileId : String): String {
+        val res : R<GameProfile> = gameProfileService.deleteProfile(session, profileId)
+        return when (res.code) {
+            200 -> "redirect:/user/gameProfile?success=true"
+            else -> "redirect:/user/gameProfile?error=" + res.msg
         }
     }
 

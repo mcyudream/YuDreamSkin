@@ -12,6 +12,7 @@ import online.yudream.yudreamskin.mapper.GameProfileMapper
 import online.yudream.yudreamskin.mapper.SkinMapper
 import online.yudream.yudreamskin.service.SkinService
 import online.yudream.yudreamskin.utils.MinioUtils
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -44,9 +45,9 @@ class SkinServiceImpl : SkinService {
             metadata.put("model", skinType)
         }
         val skin = Skin(name, file, metadata,status,0,type)
+        skin.hash = DigestUtils.sha256Hex(skinFile.bytes)
         val skinEntity = skinMapper.save(skin)
-         val closetEntity = Closet()
-
+        val closetEntity = Closet()
         closetEntity.skin = skinEntity
         closetEntity.user = user
         closetMapper.save(closetEntity)

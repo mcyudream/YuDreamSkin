@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
     private RoleMapper roleMapper;
     @Override
     public R<User> login(String username, String password, HttpSession session, HttpServletRequest request) {
-        User user = userMapper.findUserByUsername(username);
+        User user = userMapper.findUserByUsernameOrEmail(username,username);
         if (user == null) {
             return R.fail(403, "不存在的用户");
         }

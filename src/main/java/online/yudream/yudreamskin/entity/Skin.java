@@ -1,6 +1,9 @@
 package online.yudream.yudreamskin.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -8,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@AllArgsConstructor
+@Builder
 @Document("tb_skin")
 public class Skin {
 
@@ -18,11 +23,13 @@ public class Skin {
     private String fileName;
     private String name;
     private Integer status;
+    private String hash;
     private Integer like;
     private Map<String,String> metadata;
     private String skinType;
     @CreatedDate
     private LocalDateTime createdAt;
+    private Integer migratedId; //默认无
 
     public Skin(){
 
@@ -34,6 +41,22 @@ public class Skin {
         this.status = status;
         this.like = like;
         this.skinType = type;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public Integer getMigratedId() {
+        return migratedId;
+    }
+
+    public void setMigratedId(Integer migratedId) {
+        this.migratedId = migratedId;
     }
 
     public String getId() {

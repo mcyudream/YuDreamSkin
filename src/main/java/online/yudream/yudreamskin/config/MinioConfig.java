@@ -26,8 +26,6 @@ public class MinioConfig {
 
     @Bean
     public String getMinioUrl(){
-        System.out.println(minioHost);
-        System.out.println(minioPort);
         if (minioHost.contains(":")){
             return minioHost;
         } else  {

@@ -27,8 +27,6 @@ public class MinioUtils {
                     minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioBucket).build());
             if (!found) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioBucket).build());
-            } else {
-                System.out.println("Bucket '" + minioBucket + "' already exists.");
             }
         } catch (Exception e){
             e.printStackTrace();
