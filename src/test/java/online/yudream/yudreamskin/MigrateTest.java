@@ -12,7 +12,6 @@ class MigrateTest {
     private MigrationService migrationService;
     @Test
     void migrate() {
-        MysqlConnDTO dto = new MysqlConnDTO("yudream.online",3306, "yudream_skin","skin","bYiPaDT6HD8fk644");
-        migrationService.migrate(dto);
+
     }
 }
