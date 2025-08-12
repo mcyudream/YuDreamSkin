@@ -1606,6 +1606,9 @@
     }
     font-size: 0.75rem;
   }
+  .m-408 {
+    margin: calc(var(--spacing) * 408);
+  }
   .filter {
     display: flex;
     flex-wrap: wrap;
@@ -1715,9 +1718,6 @@
   .mt-8 {
     margin-top: calc(var(--spacing) * 8);
   }
-  .mr-4 {
-    margin-right: calc(var(--spacing) * 4);
-  }
   .fieldset-legend {
     margin-bottom: calc(0.25rem * -1);
     display: flex;
@@ -1739,9 +1739,6 @@
   }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
-  }
-  .ml-4 {
-    margin-left: calc(var(--spacing) * 4);
   }
   .status {
     display: inline-block;
@@ -2017,14 +2014,8 @@
   .h-8 {
     height: calc(var(--spacing) * 8);
   }
-  .h-12 {
-    height: calc(var(--spacing) * 12);
-  }
   .h-16 {
     height: calc(var(--spacing) * 16);
-  }
-  .h-\[12\] {
-    height: 12;
   }
   .h-full {
     height: 100%;
@@ -2053,26 +2044,11 @@
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
-  .w-84 {
-    width: calc(var(--spacing) * 84);
-  }
   .w-auto {
     width: auto;
   }
   .w-full {
     width: 100%;
-  }
-  .max-w-16 {
-    max-width: calc(var(--spacing) * 16);
-  }
-  .max-w-24 {
-    max-width: calc(var(--spacing) * 24);
-  }
-  .max-w-28 {
-    max-width: calc(var(--spacing) * 28);
-  }
-  .max-w-36 {
-    max-width: calc(var(--spacing) * 36);
   }
   .max-w-lg {
     max-width: var(--container-lg);
@@ -2117,9 +2093,6 @@
   }
   .grid-flow-col {
     grid-auto-flow: column;
-  }
-  .grid-cols-\[repeat\(auto-fill\,minmax\(240px\,1fr\)\)\] {
-    grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -2191,11 +2164,6 @@
       --tw-space-x-reverse: 0;
       margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
       margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
-    }
-  }
-  .divide-current {
-    :where(& > :not(:last-child)) {
-      border-color: currentcolor;
     }
   }
   .truncate {
@@ -2374,6 +2342,9 @@
   }
   .p-0 {
     padding: calc(var(--spacing) * 0);
+  }
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -2788,19 +2759,9 @@
       display: none;
     }
   }
-  .xl\:columns-3 {
-    @media (width >= 80rem) {
-      columns: 3;
-    }
-  }
   .\32 xl\:columns-3 {
     @media (width >= 96rem) {
       columns: 3;
-    }
-  }
-  .\32 xl\:columns-4 {
-    @media (width >= 96rem) {
-      columns: 4;
     }
   }
 }

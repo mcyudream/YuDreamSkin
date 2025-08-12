@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/userCenterLayout::userCenter(~{::section})}">
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/adminLayout::userCenter(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -10,7 +10,7 @@
     <div class="flex flex-wrap">
         <div class="flex-1 space-y-6">
             <div class="join flex flex-row">
-                <button class="btn join-item" onclick="openCreateRoleModal()">创建角色</button>
+                <button class="btn join-item btn-info" onclick="openCreateRoleModal()">创建角色</button>
                 <input class="join-item input flex-1" placeholder="输入以搜索" oninput="filterTable(this)">
                 <script>
                     function filterTable(dom) {
@@ -21,47 +21,35 @@
                         });
                     }
                 </script>
-                <input type="checkbox" id="create-role-modal" class="modal-toggle" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box">
-                       <form method="post" th:action="@{/user/gameProfile/create}">
-                           <h3 class="font-bold text-lg mb-4">创建角色</h3>
 
-                           <input name="profileName" id="roleNameInput"
-                                  type="text"
-                                  placeholder="请输入角色名"
-                                  class="input input-bordered w-full" />
-                           <div class="modal-action">
-                               <button class="btn btn-success" type="submit">确定</button>
-                               <label for="create-role-modal" class="btn">取消</label>
-                           </div>
-                       </form>
-                    </div>
-                </div>
 
-                <script>
-                    /* 打开模态窗 */
-                    function openCreateRoleModal() {
-                        document.getElementById('create-role-modal').checked = true;
-                        document.getElementById('roleNameInput').value = '';   // 清空旧值
-                        document.getElementById('roleNameInput').focus();
-                    }
 
-                    /* 点击确定 */
-                    function confirmCreateRole() {
-                        const name = document.getElementById('roleNameInput').value.trim();
-                        if (!name) {
-                            alert('角色名不能为空');
-                            return;
-                        }
-                        // TODO: 把 name 发到后端或做后续处理
-                        console.log('创建角色:', name);
-
-                        /* 关闭模态窗 */
-                        document.getElementById('create-role-modal').checked = false;
-                    }
-                </script>
             </div>
+            <input type="checkbox" id="create-role-modal" class="modal-toggle" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <form method="post" th:action="@{/user/gameProfile/create}">
+                        <h3 class="font-bold text-lg mb-4">创建角色</h3>
+
+                        <input name="profileName" id="roleNameInput"
+                               type="text"
+                               placeholder="请输入角色名"
+                               class="input input-bordered w-full" />
+                        <div class="modal-action">
+                            <button class="btn btn-success" type="submit">确定</button>
+                            <label for="create-role-modal" class="btn">取消</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script>
+                /* 打开模态窗 */
+                function openCreateRoleModal() {
+                    document.getElementById('create-role-modal').checked = true;
+                    document.getElementById('roleNameInput').value = '';   // 清空旧值
+                    document.getElementById('roleNameInput').focus();
+                }
+            </script>
             <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
                 <table class="table">
                     <!-- head -->
@@ -101,8 +89,13 @@
                             createTime
                         </td>
 
-                        <td class="truncate join">
-                                <button class="join-item btn btn-info">查看皮肤</button>
+                        <td class="truncate join" th:with="url=${@minioUtils.getPreviewUrl(profile.skin.fileName,'skin')}"  >
+                                <button th:with="capeUrl=${(profile.cape != null && profile.cape.fileName != null ? profile.cape.fileName : '')==''?'':@minioUtils.getPreviewUrl(profile.cape.fileName,'skin')}" class="join-item btn btn-info"
+                                        th:data-skin="${url}"
+                                        th:data-cape="${capeUrl}"
+                                        th:data-metadata="${@objectMapper.writeValueAsString(profile.skin.metadata)}"
+                                        th:data-name="${profile.name}"
+                                        onclick="onPreviewTextures(this)">查看皮肤</button>
                                 <button class="join-item btn btn-error">删除角色</button>
                         </td>
                     </tr>
@@ -125,34 +118,24 @@
                     canvas: document.getElementById("skinViewer"),
                     width: 300,
                     height: 400,
+                    skin: defaultSkinUrl
                 });
 
-                const loadSkin = () => {
-                    viewer.loadSkin(document.getElementById("skin-url").value)
-                }
-                loadSkin()
-                const loadCape = () => {
-
-                    viewer.loadCape(document.getElementById("skin-url").value)
-                }
-                const loadNameTag = () => {
-                    const name = document.querySelector("input[name='name']").value
-                    if (name === "" || name === undefined){
-                        return;
+                const onPreviewTextures = (skin) => {
+                    const url = skin.dataset.skin
+                    const cape = skin.dataset.cape;
+                    const metadata = JSON.parse(skin.dataset.metadata);
+                    viewer.nameTag = skin.dataset.name;
+                    if (metadata){
+                        viewer.model = metadata['model']??'default'
                     }
-                    viewer.nameTag = name
-                    loadModel()
-                }
-                const loadModel = () => {
-                    const skinType = document.querySelector('input[name="skinType"]:checked').value
-                    if (skinType === 'default' || skinType === 'slim') {
+                    viewer.loadSkin(url)
+                    if (cape!=='' && cape!==undefined) {
+                        viewer.loadCape(cape)
+                    }else {
                         viewer.loadCape(null)
-                        viewer.model = skinType
-                        loadSkin()
-                    } else if (skinType === 'cape') {
-                        viewer.loadSkin(defaultSkinUrl)
-                        loadCape()
                     }
+
                 }
             </script>
         </div>

@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference
 class MenuHolder(private val menuService: MenuService) {
     private val cacheHomeTop = AtomicReference<Menu>()
     private val cacheUserSide = AtomicReference<Menu>()
+    private val cacheAdminSide = AtomicReference<Menu>()
 
     @PostConstruct
     fun load() {
@@ -20,9 +21,11 @@ class MenuHolder(private val menuService: MenuService) {
     fun refresh() {
         cacheHomeTop.set(menuService.getMenu("home_top_nav"))
         cacheUserSide.set(menuService.getMenu("user_side_menu"))
+        cacheAdminSide.set(menuService.getMenu("admin_side_menu"))
 //        cacheHomeTop.set(menuService.getMenu("home_top_nav"))
     }
 
     fun getHomeTopNav(): Menu = cacheHomeTop.get()
     fun getUserSideMenu(): Menu = cacheUserSide.get()
+    fun getAdminSideMenu(): Menu = cacheAdminSide.get()
 }

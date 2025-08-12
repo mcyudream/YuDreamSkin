@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org" th:replace="~{index::page(~{::body})}" th:fragment="admin(adminContent)">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="h-full w-full flex flex-col">
+    <div th:replace="~{components/nav :: top-nav('admin-side-menu')}"></div>
+    <main class="items-center justify-center flex-row flex-1 flex relative">
+        <img th:src="@{/assets/images/bg.png}" class="bg-fixed flex absolute w-full h-full blur" style="z-index: -999" alt="bg">
+        <div th:replace="~{components/nav :: admin-sub-menu}"></div>
+        <div class="flex-auto h-full">
+            <div class="h-full w-full overflow-y-auto bg-white/60 shadow p-4">
+
+                <div th:if="${param.error != null}" role="alert" class="alert w-full alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span th:text="|${param.error} ,请重新尝试!|"></span>
+                </div><div th:if="${param.success != null}" role="alert" class="alert w-full alert-success mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span th:text="操作成功"></span>
+            </div>
+                <div th:replace="${adminContent}" class="w-full h-full"> </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

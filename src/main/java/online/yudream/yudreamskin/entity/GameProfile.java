@@ -19,10 +19,21 @@ public class GameProfile {
     @DocumentReference(lazy = true)
     private User user;
     private String name;
-    private String skin;
+    @DocumentReference(lazy = true)
+    private Skin skin;
+    @DocumentReference(lazy = true)
+    private Skin cape;
     private LocalDateTime lastJoin;
     @CreatedDate
     private LocalDateTime createTime;
+
+    public Skin getCape() {
+        return cape;
+    }
+
+    public void setCape(Skin cape) {
+        this.cape = cape;
+    }
 
     public User getUser() {
         return user;
@@ -48,11 +59,11 @@ public class GameProfile {
         this.name = name;
     }
 
-    public String getSkin() {
+    public Skin getSkin() {
         return skin;
     }
 
-    public void setSkin(String skin) {
+    public void setSkin(Skin skin) {
         this.skin = skin;
     }
 

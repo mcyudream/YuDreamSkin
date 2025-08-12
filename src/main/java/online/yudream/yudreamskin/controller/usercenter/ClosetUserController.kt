@@ -38,4 +38,15 @@ class ClosetUserController  {
             else -> "redirect:/user/closet?error=" + res.msg
         }
     }
+
+    @PostMapping("/set")
+    fun setTextures(session: HttpSession, @RequestParam skinId: String, @RequestParam profileId: String): String {
+        val res = skinService.setTextures(session,profileId, skinId)
+        return when (res.code){
+            200 -> "redirect:/user/closet?success"
+            else -> "redirect:/user/closet?error=" + res.msg
+        }
+    }
+
+
 }
