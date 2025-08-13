@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 @Component
 public class MinioUtils {
 
@@ -46,6 +49,38 @@ public class MinioUtils {
             ).build());
             return fileName;
         } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String uploadFile(File file, String filetype){
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            // 计算文件的 MD5 值
+            String md5 = DigestUtils.md5DigestAsHex(fileInputStream);
+
+            // 获取文件名，使用MD5作为前缀
+            String fileName = md5 + ":md5:" + file.getName() + "." + filetype;
+
+            // 获取文件大小
+            long fileSize = file.length();
+
+            // 重新打开文件输入流，因为它已经在计算MD5时被消费了
+            fileInputStream = new FileInputStream(file);
+
+            // 上传文件
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(minioBucket)
+                    .contentType("application/octet-stream")
+                    .object(fileName)
+                    .stream(fileInputStream, fileSize, -1)
+                    .build());
+
+            // 返回上传的文件名
+            return fileName;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -10,9 +10,14 @@ import online.yudream.yudreamskin.mapper.GameProfileMapper;
 import online.yudream.yudreamskin.mapper.SkinMapper;
 import online.yudream.yudreamskin.mapper.UserMapper;
 import online.yudream.yudreamskin.service.MigrationService;
+import online.yudream.yudreamskin.utils.FileUtils;
+import online.yudream.yudreamskin.utils.MinioUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.File;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.List;
@@ -30,6 +35,42 @@ public class MigrationServiceImpl implements MigrationService {
     private SkinMapper skinMapper;
     @Autowired
     private ClosetMapper closetMapper;
+    @Resource
+    private MinioUtils minioUtils;
+    @Resource
+    private FileUtils fileUtils;
+
+    @Override
+    public void migrateSkinsFile(List<File> files, PrintWriter w) {
+        try{
+            log(w, COLOR_GREEN, "🔍 正在统计记录数...");
+            log(w, COLOR_GREEN, "📊 总览：材质 " + files.size());
+            log(w, COLOR_CYAN, "🖼️ 开始迁移材质...");
+            for (File file : files) {
+                log(w, COLOR_YELLOW, "└ 处理材质 " + file.getName());
+                String hash = file.getName();
+                String fileName = minioUtils.uploadFile(file,"png");
+                List<Skin> skins = skinMapper.findSkinsByHash(hash);
+                for  (Skin skinEntity : skins) {
+                    log(w, COLOR_YELLOW, "└ - 处理关联材质 " + skinEntity.getName());
+                    skinEntity.setFileName(fileName);
+                    skinMapper.save(skinEntity);
+                }
+            }
+            log(w, COLOR_GREEN, "🎉 迁移全部完成！");
+        } catch (Exception e){
+            log(w, COLOR_RED, "❌ 失败：" + e.getMessage());
+
+        }finally {
+            if (!files.isEmpty()){
+                File tempFolder = files.get(0).getParentFile();
+                if (tempFolder != null) {
+                    fileUtils.deleteTempDirectory(tempFolder);
+                }
+            }
+        }
+    }
+
 
     @Override
     public void migrate(MysqlConnDTO dto, PrintWriter w) {

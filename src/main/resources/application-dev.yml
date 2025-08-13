@@ -29,12 +29,21 @@ spring:
       "mail.smtp.auth": true
       "mail.smtp.starttls.enable": true
       "mail.smtp.starttls.required": true
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+      file-size-threshold: 300MB
+  mvc:
+    async:
+      request-timeout: 600000
 server:
   address: 0.0.0.0
   port: 8080
   servlet:
     session:
       timeout: 12h
+
 default-user:
   username: admin
   password: admin

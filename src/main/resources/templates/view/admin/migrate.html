@@ -6,6 +6,9 @@
 </head>
 <body>
 <section>
+    <script th:src="@{/js/jszip.min.js}">
+
+    </script>
     <div class="flex justify-center items-start  space-x-6 space-y-6">
         <div class="sm:max-w-72 bg-base-100 card-sm card">
             <div>
@@ -40,7 +43,7 @@
             </div>
         </div>
         <!-- 在表单后追加 -->
-        <div class="flex-1 bg-base-100 card h-full p-6">
+        <div class="flex-1  bg-base-100 card h-full p-6">
             <figure>
                 <h3>
                     迁移日志
@@ -50,10 +53,113 @@
                 <iframe id="logFrame" name="logFrame" style="width:100%; height:400px;  font-family:Consolas,monospace; font-size:14px; overflow-y:scroll;"></iframe>
             </div>
         </div>
+        <div class="flex-1 sm:max-w-120 bg-base-100 card p-6">
+            <figure>材质迁移</figure>
+            <form id="migrate-textures" th:action="@{/admin/migrate/executeTextures}" method="post" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <div role="alert" class="alert mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>材质文件在BlessingSkin根目录下<br><strong>/storage/textures/*</strong><br>上传之前请保证数据库已经迁移成功!</span>
+                    </div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        上传材质
+                    </label>
+                    <input
+                            type="file"
+                            id="file-input"
+                            class="file-input"
+                            multiple
+                            onchange="previewFiles()"
+                    />
+                    <input
+                            hidden="hidden"
+                            type="file"
+                            id="file-upload"
+                            name="file"
+                            class="file-input"
+                            onchange="previewFiles()"
+                    />
+
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-ellipsis text-sm font-bold mb-2" for="file-list">
+                        上传列表
+                    </label>
+                    <div class="max-h-48 overflow-auto">
+                        <ul id="file-list" class="list-none p-0 ">
+                        </ul>
+                    </div>
+                </div>
+                <button class="mt-6 w-full btn btn-error">开始上传</button>
+            </form>
+            <script>
+                function previewFiles() {
+                    const fileList = document.getElementById('file-list');
+                    fileList.innerHTML = ''; // 清空之前的文件列表
+
+                    const fileInput = document.getElementById('file-input');
+                    const files = fileInput.files;
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'border-b', 'border-gray-300');
+
+                        // 创建文件名显示区域
+                        const fileNameDiv = document.createElement('div');
+                        fileNameDiv.classList.add('text-gray-700', 'text-ellipsis', 'overflow-hidden', 'whitespace-nowrap', 'w-48');
+                        fileNameDiv.textContent = file.name;
+                        listItem.appendChild(fileNameDiv);
+
+                        // 创建删除按钮
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('text-red-500', 'hover:text-red-700', 'focus:outline-none');
+                        deleteButton.textContent = '×';
+                        deleteButton.onclick = function (event) {
+                            event.stopPropagation(); // 防止点击事件冒泡
+                            // 删除文件
+                            const dataTransfer = new DataTransfer();
+                            for (let j = 0; j < fileInput.files.length; j++) {
+                                if (fileInput.files[j].name !== file.name) {
+                                    dataTransfer.items.add(fileInput.files[j]);
+                                }
+                            }
+                            fileInput.files = dataTransfer.files;
+                            previewFiles(); // 更新文件列表
+                        };
+                        listItem.appendChild(deleteButton);
+
+                        // 将文件列表项添加到文件列表中
+                        fileList.appendChild(listItem);
+                    }
+                    compressFilesToZip(files).then(zipFile => {
+                        const fileUploadInput = document.getElementById('file-upload');
+                        const dataTransfer = new DataTransfer();
+
+                        // 将压缩后的 ZIP 文件添加到隐藏的 input
+                        dataTransfer.items.add(zipFile);
+                        fileUploadInput.files = dataTransfer.files;
+                    });
+                }
+                async function compressFilesToZip(files) {
+                    const zip = new JSZip();
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const fileData = await file.arrayBuffer();
+                        zip.file(file.name, fileData);
+                    }
+                    const zipBlob = await zip.generateAsync({ type: "blob" });
+                    const zipFile = new File([zipBlob], "textures.zip", { type: "application/zip" });
+                    return zipFile;
+                }
+            </script>
+        </div>
 
         <script>
-            /* 让表单 POST 到 iframe，实时日志立即显示 */
-            document.querySelector('form').target = 'logFrame';
+            document.querySelectorAll('form').forEach((el) => {
+                el.target = 'logFrame'
+            });
         </script>
     </div>
 </section>
