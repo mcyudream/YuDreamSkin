@@ -11,89 +11,91 @@
         <script src="/js/skinview3d.bundle.js"></script>
         <div class="tabs tabs-box flex-1">
             <input type="radio" name="skin-tab" class="tab"  checked="checked"  aria-label="材质" />
-            <div class="tab-content bg-base-100 border-base-300 p-6 space-y-6">
-                <div class=" flex flex-wrap gap-6 w-full justify-start">
+            <div class="tab-content bg-base-100 border-base-300 p-6 space-y-6 ">
+                <div class="flex flex-col h-full">
+                    <div class=" flex flex-wrap gap-6 w-full  flex-auto justify-start">
 
-                    <div th:if="${skinRes.content.isEmpty()}" class="card flex-1 w-64 bg-base-300 shadow rounded justify-center items-center ">
-                        暂无材质，请先去上传材质
-                    </div>
-                    <div class="card w-64 bg-base-300 shadow rounded items-start "
-                         th:if="${!skinRes.content.isEmpty()}"
-                         th:each="item : ${skinRes.content}"
-                         th:with="url=${@minioUtils.getPreviewUrl(item.skin.fileName,'skin')}"
-                         th:data-url="${url}"
-                         th:data-type="${item.skin.skinType}"
-                         th:data-metadata="${@objectMapper.writeValueAsString(item.skin.metadata)}"
-                         th:data-name="${item.skin.name}"
-                         onclick="onSkinClick(this)">
-                        <figure class="w-full bg-base-200 p-2">
-                           <div class=" flex justify-between w-full items-center">
-                               <span th:text="${item.skin.name}" class="text-ellipsis overflow-hidden whitespace-nowrap"> </span>
-                               <button class="btn btn-ghost" onclick="openSetTexturesModal(this)" th:data-skin="${item.skin.id}">
-                                   <svg t="1755005461107" class="icon size-6" fill="currentColor" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2302"><path d="M919.6 405.6l-57.2-8c-12.7-1.8-23-10.4-28-22.1-11.3-26.7-25.7-51.7-42.9-74.5-7.7-10.2-10-23.5-5.2-35.3l21.7-53.5c6.7-16.4 0.2-35.3-15.2-44.1L669.1 96.6c-15.4-8.9-34.9-5.1-45.8 8.9l-35.4 45.3c-7.9 10.2-20.7 14.9-33.5 13.3-14-1.8-28.3-2.8-42.8-2.8-14.5 0-28.8 1-42.8 2.8-12.8 1.6-25.6-3.1-33.5-13.3l-35.4-45.3c-10.9-14-30.4-17.8-45.8-8.9L230.4 168c-15.4 8.9-21.8 27.7-15.2 44.1l21.7 53.5c4.8 11.9 2.5 25.1-5.2 35.3-17.2 22.8-31.7 47.8-42.9 74.5-5 11.8-15.3 20.4-28 22.1l-57.2 8C86 408 72.9 423 72.9 440.8v142.9c0 17.7 13.1 32.7 30.6 35.2l57.2 8c12.7 1.8 23 10.4 28 22.1 11.3 26.7 25.7 51.7 42.9 74.5 7.7 10.2 10 23.5 5.2 35.3l-21.7 53.5c-6.7 16.4-0.2 35.3 15.2 44.1L354 927.8c15.4 8.9 34.9 5.1 45.8-8.9l35.4-45.3c7.9-10.2 20.7-14.9 33.5-13.3 14 1.8 28.3 2.8 42.8 2.8 14.5 0 28.8-1 42.8-2.8 12.8-1.6 25.6 3.1 33.5 13.3l35.4 45.3c10.9 14 30.4 17.8 45.8 8.9l123.7-71.4c15.4-8.9 21.8-27.7 15.2-44.1l-21.7-53.5c-4.8-11.8-2.5-25.1 5.2-35.3 17.2-22.8 31.7-47.8 42.9-74.5 5-11.8 15.3-20.4 28-22.1l57.2-8c17.6-2.5 30.6-17.5 30.6-35.2V440.8c0.2-17.8-12.9-32.8-30.5-35.2z m-408 245.5c-76.7 0-138.9-62.2-138.9-138.9s62.2-138.9 138.9-138.9 138.9 62.2 138.9 138.9-62.2 138.9-138.9 138.9z" p-id="2303"></path></svg>
-                               </button>
-                           </div>
-                        </figure>
-                        <div class="card-body p-0">
-                            <div th:if="${item.skin.skinType=='skin'}"
-                                 th:insert="~{components/skinLoader::skinRender(${item.id}, ${url})}">
-                            </div>
-                            <div th:if="${item.skin.skinType=='cape'}"
-                                 th:insert="~{components/skinLoader::capeRender(${item.id}, ${url})}">
-                                1
-                            </div>
+                        <div th:if="${skinRes.content.isEmpty()}" class="card flex-1 w-64 h-full justify-center items-center ">
+                            暂无材质，请先去上传材质
                         </div>
-                    </div>
-                    <input type="checkbox" id="set-textures-modal" class="modal-toggle" />
-                    <div class="modal" role="dialog">
-                        <div class="modal-box">
-                            <form method="post" th:action="@{/user/closet/set}">
-                                <h3 class="font-bold text-lg mb-4">设置材质</h3>
-                                <input id="set-skin-id" name="skinId" type="hidden" >
-                                <label>
-
-                                    <select class="select w-full" name="profileId">
-                                        <option disabled selected>选择一个角色</option>
-                                        <option th:each="profile:${@gameProfileServiceImpl.getUserProfile(session.user, null)}" th:text="${profile.name}" th:value="${profile.uuid}"></option>
-                                    </select>
-                                </label>
-                                <div class="modal-action">
-                                    <button class="btn btn-success" type="submit">确定</button>
-                                    <label for="set-textures-modal" class="btn">取消</label>
+                        <div class="card w-64 bg-base-300 shadow rounded items-start "
+                             th:if="${!skinRes.content.isEmpty()}"
+                             th:each="item : ${skinRes.content}"
+                             th:with="url=${@minioUtils.getPreviewUrl(item.skin.fileName,'skin')}"
+                             th:data-url="${url}"
+                             th:data-type="${item.skin.skinType}"
+                             th:data-metadata="${@objectMapper.writeValueAsString(item.skin.metadata)}"
+                             th:data-name="${item.skin.name}"
+                             onclick="onSkinClick(this)">
+                            <figure class="w-full bg-base-200 p-2">
+                                <div class=" flex justify-between w-full items-center">
+                                    <span th:text="${item.skin.name}" class="text-ellipsis overflow-hidden whitespace-nowrap"> </span>
+                                    <button class="btn btn-ghost" onclick="openSetTexturesModal(this)" th:data-skin="${item.skin.id}">
+                                        <svg t="1755005461107" class="icon size-6" fill="currentColor" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2302"><path d="M919.6 405.6l-57.2-8c-12.7-1.8-23-10.4-28-22.1-11.3-26.7-25.7-51.7-42.9-74.5-7.7-10.2-10-23.5-5.2-35.3l21.7-53.5c6.7-16.4 0.2-35.3-15.2-44.1L669.1 96.6c-15.4-8.9-34.9-5.1-45.8 8.9l-35.4 45.3c-7.9 10.2-20.7 14.9-33.5 13.3-14-1.8-28.3-2.8-42.8-2.8-14.5 0-28.8 1-42.8 2.8-12.8 1.6-25.6-3.1-33.5-13.3l-35.4-45.3c-10.9-14-30.4-17.8-45.8-8.9L230.4 168c-15.4 8.9-21.8 27.7-15.2 44.1l21.7 53.5c4.8 11.9 2.5 25.1-5.2 35.3-17.2 22.8-31.7 47.8-42.9 74.5-5 11.8-15.3 20.4-28 22.1l-57.2 8C86 408 72.9 423 72.9 440.8v142.9c0 17.7 13.1 32.7 30.6 35.2l57.2 8c12.7 1.8 23 10.4 28 22.1 11.3 26.7 25.7 51.7 42.9 74.5 7.7 10.2 10 23.5 5.2 35.3l-21.7 53.5c-6.7 16.4-0.2 35.3 15.2 44.1L354 927.8c15.4 8.9 34.9 5.1 45.8-8.9l35.4-45.3c7.9-10.2 20.7-14.9 33.5-13.3 14 1.8 28.3 2.8 42.8 2.8 14.5 0 28.8-1 42.8-2.8 12.8-1.6 25.6 3.1 33.5 13.3l35.4 45.3c10.9 14 30.4 17.8 45.8 8.9l123.7-71.4c15.4-8.9 21.8-27.7 15.2-44.1l-21.7-53.5c-4.8-11.8-2.5-25.1 5.2-35.3 17.2-22.8 31.7-47.8 42.9-74.5 5-11.8 15.3-20.4 28-22.1l57.2-8c17.6-2.5 30.6-17.5 30.6-35.2V440.8c0.2-17.8-12.9-32.8-30.5-35.2z m-408 245.5c-76.7 0-138.9-62.2-138.9-138.9s62.2-138.9 138.9-138.9 138.9 62.2 138.9 138.9-62.2 138.9-138.9 138.9z" p-id="2303"></path></svg>
+                                    </button>
                                 </div>
-                            </form>
+                            </figure>
+                            <div class="card-body p-0">
+                                <div th:if="${item.skin.skinType=='skin'}"
+                                     th:insert="~{components/skinLoader::skinRender(${item.id}, ${url})}">
+                                </div>
+                                <div th:if="${item.skin.skinType=='cape'}"
+                                     th:insert="~{components/skinLoader::capeRender(${item.id}, ${url})}">
+                                    1
+                                </div>
+                            </div>
                         </div>
+                        <input type="checkbox" id="set-textures-modal" class="modal-toggle" />
+                        <div class="modal" role="dialog">
+                            <div class="modal-box">
+                                <form method="post" th:action="@{/user/closet/set}">
+                                    <h3 class="font-bold text-lg mb-4">设置材质</h3>
+                                    <input id="set-skin-id" name="skinId" type="hidden" >
+                                    <label>
+
+                                        <select class="select w-full" name="profileId">
+                                            <option disabled selected>选择一个角色</option>
+                                            <option th:each="profile:${@gameProfileServiceImpl.getUserProfile(session.user, null)}" th:text="${profile.name}" th:value="${profile.uuid}"></option>
+                                        </select>
+                                    </label>
+                                    <div class="modal-action">
+                                        <button class="btn btn-success" type="submit">确定</button>
+                                        <label for="set-textures-modal" class="btn">取消</label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <script>
+                            /* 打开模态窗 */
+                            function openSetTexturesModal(card) {
+                                document.getElementById('set-skin-id').value = card.dataset.skin;
+                                document.getElementById('set-textures-modal').checked = true;
+                            }
+
+                        </script>
                     </div>
-
-                    <script>
-                        /* 打开模态窗 */
-                        function openSetTexturesModal(card) {
-                            document.getElementById('set-skin-id').value = card.dataset.skin;
-                            document.getElementById('set-textures-modal').checked = true;
-                        }
-
-                    </script>
-                </div>
-                <!-- 分页条 -->
-                <div class="join flex justify-center items-center space-x-2"
-                     th:with="page=${param.page==null?1:#numbers.formatInteger(param.page,1)},
+                    <!-- 分页条 -->
+                    <div class="join flex justify-center items-center space-x-2"
+                         th:with="page=${param.page==null?1:#numbers.formatInteger(param.page,1)},
               size=${param.size==null?10:#numbers.formatInteger(param.size,1)}">
 
-                    <span class="text-sm" th:text="|共 ${skinRes.totalElements} 条 ${size} 条/页|"></span>
+                        <span class="text-sm" th:text="|共 ${skinRes.totalElements} 条 ${size} 条/页|"></span>
 
-                    <a class="join-item btn"
-                       th:classappend="${page==1} ? 'btn-disabled'"
-                       th:href="@{/user/closet(page=${page - 1}, size=${size})}">
-                        上一页
-                    </a>
-                    <button class="join-item btn btn-active" th:text="${page}"></button>
-                    <a class="join-item btn"
-                       th:classappend="${page==skinRes.totalPages} ? 'btn-disabled'"
-                       th:href="@{/user/closet(page=${page + 1}, size=${size})}">
-                        下一页
-                    </a>
+                        <a class="join-item btn"
+                           th:classappend="${page==1} ? 'btn-disabled'"
+                           th:href="@{/user/closet(page=${page - 1}, size=${size})}">
+                            上一页
+                        </a>
+                        <button class="join-item btn btn-active" th:text="${page}"></button>
+                        <a class="join-item btn"
+                           th:classappend="${page==skinRes.totalPages} ? 'btn-disabled'"
+                           th:href="@{/user/closet(page=${page + 1}, size=${size})}">
+                            下一页
+                        </a>
 
-                    <span class="text-sm" th:text="|共 ${skinRes.totalPages} 页|"></span>
+                        <span class="text-sm" th:text="|共 ${skinRes.totalPages} 页|"></span>
+                    </div>
                 </div>
             </div>
 
